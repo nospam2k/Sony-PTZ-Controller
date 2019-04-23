@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>538</width>
+    <height>387</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sony PTZ Automator</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QToolTip{
+	color : black;
+}
+QWidget#centralWidget{
+	background : #333333;
+}
+QDialog{
+	background : #333333;
+}
+QLCDNumber{
+background : white;
+}
+
+QTabWidget{
+border: none;
+}
+QTabBar::tab{
+background : black;
+color : white;
+}
+QTabBar::tab::selected{
+background : #808080;
+
+}
+QGroupBox{
+	color : white;
+	margin-top : 2ex;
+	border-radius : 5px;
+	padding : 8px;
+	padding-top : 13px;
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+}
+QMenuBar#menuBar{
+
+	background : grey;
+	color : white;
+	 border-bottom-style: outset;
+ 	 border-bottom-width: 1px;
+	 border-bottom-color: #222222;
+}
+QMenu{
+	background : grey;
+	color : #1f1f1f;
+}
+QMenu::item:selected{
+	background : #c9c9c9;
+}
+QStatusBar#statusBar{
+	background : grey;
+	color : white;
+	border-top-style: outset;
+ 	border-top-width: 1px;
+	border-top-color: #222222;
+}
+QPushButton{
+	color : white;
+	background : grey;
+	padding : 8px 5px;
+	border-radius : 3px;
+	min-width : 60px;
+}
+QPushButton:hover{
+	background : #c9c9c9;
+}
+
+QPushButton:pressed{
+	background : #474747;
+}
+
+QPushButton:disabled{
+	color : #474747;
+}
+QLineEdit{
+	color : white;
+	background : #111111;
+	padding : 3px;
+	border-radius : 3px;
+	border-color : #474747;
+	border-width : 1px;
+	border-style : inset;
+}
+QTextEdit{
+	padding : 3px;
+}
+QComboBox{
+	color : white;
+	background : #111111;
+	padding : 3px;
+	min-width : 40px;
+	border-radius : 3px;
+	border-style : inset;
+	border-width : 1px;
+	border-color : #474747;
+}
+QComboBox::drop-down{
+	
+}
+QComboBox QAbstractItemView{
+	background-color : black;
+	color : white;
+}
+QSlider::handle{
+	background : grey;
+}
+QSlider::handle:hover{
+	background : #c9c9c9;
+}
+QSlider::handle:pressed{
+	background : #474747;
+}
+QLabel{
+	color : white;
+}
+QRadioButton{
+	color : white;
+}
+QCheckBox{
+	color : white;
+}
+QRadioButton::indicator{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+	background : white;
+	border-radius : 6px;
+}
+QRadioButton::indicator:checked{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: white;
+	background : #1f1f1f;
+	border-radius : 6px;
+}
+QCheckBox::indicator{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+	background : white;
+}
+QCheckBox::indicator:checked{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: white;
+	background : #1f1f1f;
+}
+QHeaderView::section{
+	border-style : outset;
+	border-width : 1px;
+	border-color : #c9c9c9;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="pushButton">
+           <property name="text">
+            <string>Add Camera</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="iplcd">
+          <property name="styleSheet">
+           <string notr="true">QLCDNumber{
+background : #333333;
+}</string>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="digitCount">
+           <number>20</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QPushButton" name="pushButton_7">
+          <property name="text">
+           <string>Edit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_8">
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_9">
+          <property name="text">
+           <string>Connect</string>
+          </property>
+          <property name="icon">
+           <iconset resource="sonyptz.qrc">
+            <normaloff>:/assets/toggle-mid.png</normaloff>:/assets/toggle-mid.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Tx &amp; Rx Data:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="textEdit"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QPushButton" name="pushButton_4">
+          <property name="text">
+           <string>Clear</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Presets:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListWidget" name="listWidget"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QPushButton" name="pushButton_10">
+          <property name="text">
+           <string>Remove Preset</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>Add Preset</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Wait Time:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLCDNumber" name="lcdNumber">
+              <property name="styleSheet">
+               <string notr="true">QLCDNumber{
+background : #333333;
+}</string>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <property name="digitCount">
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDial" name="dial">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="notchTarget">
+               <double>3.700000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Movement Speed:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLCDNumber" name="lcdNumber_2">
+              <property name="styleSheet">
+               <string notr="true">QLCDNumber{
+background : #333333;
+}</string>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDial" name="dial_2">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximum">
+               <number>18</number>
+              </property>
+              <property name="pageStep">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QPushButton" name="pushButton_6">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_5">
+          <property name="text">
+           <string>Play</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="sonyptz.qrc"/>
+ </resources>
+ <connections/>
+</ui>

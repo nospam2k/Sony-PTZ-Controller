@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/play.png</file>
+        <file>assets/stop.png</file>
+        <file>assets/toggle-mid.png</file>
+        <file>assets/toggle-off.png</file>
+        <file>assets/toggle-on.png</file>
+        <file>assets/downarrow.png</file>
+        <file>assets/focusin.png</file>
+        <file>assets/focusout.png</file>
+        <file>assets/home.png</file>
+        <file>assets/leftarrow.png</file>
+        <file>assets/minus.png</file>
+        <file>assets/plus.png</file>
+        <file>assets/rightarrow.png</file>
+        <file>assets/uparrow.png</file>
+        <file>assets/sonyptz.png</file>
+    </qresource>
+</RCC>

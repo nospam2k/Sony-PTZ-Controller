@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PresetSetupDlg</class>
+ <widget class="QDialog" name="PresetSetupDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>670</width>
+    <height>272</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Preset Setup</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QToolTip{
+	color : black;
+}
+QWidget#centralWidget{
+	background : #333333;
+}
+QDialog{
+	background : #333333;
+}
+QGroupBox{
+	color : white;
+	margin-top : 2ex;
+	border-radius : 5px;
+	padding : 8px;
+	padding-top : 13px;
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+}
+QMenuBar#menuBar{
+
+	background : grey;
+	color : white;
+	 border-bottom-style: outset;
+ 	 border-bottom-width: 1px;
+	 border-bottom-color: #222222;
+}
+QMenu{
+	background : grey;
+	color : #1f1f1f;
+}
+QMenu::item:selected{
+	background : #c9c9c9;
+}
+QStatusBar#statusBar{
+	background : grey;
+	color : white;
+	border-top-style: outset;
+ 	border-top-width: 1px;
+	border-top-color: #222222;
+}
+QPushButton{
+	color : white;
+	background : grey;
+	padding : 8px 5px;
+	border-radius : 3px;
+	min-width : 60px;
+}
+QPushButton:hover{
+	background : #c9c9c9;
+}
+
+QPushButton:pressed{
+	background : #474747;
+}
+
+QPushButton:disabled{
+	color : #474747;
+}
+QLineEdit{
+	color : white;
+	background : #111111;
+	padding : 3px;
+	border-radius : 3px;
+	border-color : #474747;
+	border-width : 1px;
+	border-style : inset;
+}
+QTextEdit{
+	color : white;
+	background : #111111;
+	padding : 3px;
+	border-radius : 3px;
+	border-color : white;
+	border-width : 1px;
+}
+QComboBox{
+	color : white;
+	background : #111111;
+	padding : 3px;
+	min-width : 40px;
+	border-radius : 3px;
+	border-style : inset;
+	border-width : 1px;
+	border-color : #474747;
+}
+QComboBox::drop-down{
+	
+}
+QComboBox QAbstractItemView{
+	background-color : black;
+	color : white;
+}
+QSlider::handle{
+	background : grey;
+}
+QSlider::handle:hover{
+	background : #c9c9c9;
+}
+QSlider::handle:pressed{
+	background : #474747;
+}
+QLabel{
+	color : white;
+}
+QRadioButton{
+	color : white;
+}
+QCheckBox{
+	color : white;
+}
+QRadioButton::indicator{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+	background : white;
+	border-radius : 6px;
+}
+QRadioButton::indicator:checked{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: white;
+	background : #1f1f1f;
+	border-radius : 6px;
+}
+QCheckBox::indicator{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: #1f1f1f;
+	background : white;
+}
+QCheckBox::indicator:checked{
+	 border-style: outset;
+ 	 border-width: 2px;
+	 border-color: white;
+	background : #1f1f1f;
+}
+QHeaderView::section{
+	border-style : outset;
+	border-width : 1px;
+	border-color : #c9c9c9;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="pushButton_17">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/leftarrow.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/leftarrow.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/leftarrow.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="pushButton_15">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/downarrow.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/downarrow.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/downarrow.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="pushButton_18">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/rightarrow.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/rightarrow.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/rightarrow.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_16">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/home.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/home.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/home.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="pushButton_14">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/uparrow.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/uparrow.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/uparrow.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_11">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>44</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusin.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusin.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusin.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="pushButton_12">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>44</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/minus.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/minus.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/minus.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="pushButton_10">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>44</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/plus.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/plus.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/plus.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_13">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>44</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusout.png') center top no-repeat;
+	padding :0px;
+}
+QPushButton:hover{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusout.png') center center no-repeat;
+}
+QPushButton:pressed{
+	width : 44px;
+	height : 44px;
+	background :  url(':/assets/focusout.png') center bottom no-repeat;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Zoom</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Focus</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Preset Name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdit"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="comboBox_6"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Preset Number</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="text">
+          <string>Set Preset</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_3">
+         <property name="verticalSpacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Preset Number</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="comboBox_7"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_9">
+         <property name="text">
+          <string>Recall Preset</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="bottomMargin">
+          <number>8</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="radioButton_2">
+           <property name="text">
+            <string>Auto Focus</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButton">
+           <property name="text">
+            <string>Manual Focus</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Pan Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="comboBox_2"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Tilt Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="comboBox_3"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Zoom Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="comboBox_5"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Focus Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="comboBox_4"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_10">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

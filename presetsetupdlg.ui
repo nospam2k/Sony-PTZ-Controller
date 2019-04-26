@@ -190,7 +190,7 @@ QHeaderView::section{
           <number>6</number>
          </property>
          <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_17">
+          <widget class="QPushButton" name="moveLeftBtn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
 	width : 44px;
@@ -215,7 +215,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QPushButton" name="pushButton_15">
+          <widget class="QPushButton" name="moveDownBtn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
 	width : 44px;
@@ -240,7 +240,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="2" column="2">
-          <widget class="QPushButton" name="pushButton_18">
+          <widget class="QPushButton" name="moveRightBtn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
 	width : 44px;
@@ -265,7 +265,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_16">
+          <widget class="QPushButton" name="moveHomeBtn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
 	width : 44px;
@@ -290,7 +290,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QPushButton" name="pushButton_14">
+          <widget class="QPushButton" name="moveUpBtn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
 	width : 44px;
@@ -361,7 +361,7 @@ QPushButton:pressed{
           <number>6</number>
          </property>
          <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton_11">
+          <widget class="QPushButton" name="focusInBtn">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -392,7 +392,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_12">
+          <widget class="QPushButton" name="zoomOutBtn">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -423,7 +423,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QPushButton" name="pushButton_10">
+          <widget class="QPushButton" name="zoomInBtn">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -454,7 +454,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_13">
+          <widget class="QPushButton" name="focusOutBtn">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -549,10 +549,10 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="presetNameEdit"/>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="comboBox_6"/>
+          <widget class="QComboBox" name="presetCombo1"/>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_8">
@@ -564,7 +564,7 @@ QPushButton:pressed{
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="setPresetBtn">
          <property name="text">
           <string>Set Preset</string>
          </property>
@@ -583,12 +583,12 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="comboBox_7"/>
+          <widget class="QComboBox" name="presetCombo2"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_9">
+        <widget class="QPushButton" name="recallPreset">
          <property name="text">
           <string>Recall Preset</string>
          </property>
@@ -603,7 +603,7 @@ QPushButton:pressed{
           <number>8</number>
          </property>
          <item>
-          <widget class="QRadioButton" name="radioButton_2">
+          <widget class="QRadioButton" name="autoFocusRadio">
            <property name="text">
             <string>Auto Focus</string>
            </property>
@@ -613,7 +613,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QRadioButton" name="manualFocusRadio">
            <property name="text">
             <string>Manual Focus</string>
            </property>
@@ -661,7 +661,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="comboBox_2"/>
+          <widget class="QComboBox" name="panSpeedCombo"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
@@ -671,7 +671,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="comboBox_3"/>
+          <widget class="QComboBox" name="tiltSpeedCombo"/>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_3">
@@ -681,7 +681,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QComboBox" name="comboBox_5"/>
+          <widget class="QComboBox" name="zoomSpeedCombo"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_4">
@@ -691,7 +691,7 @@ QPushButton:pressed{
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QComboBox" name="comboBox_4"/>
+          <widget class="QComboBox" name="focusSpeedCombo"/>
          </item>
         </layout>
        </item>
@@ -728,17 +728,17 @@ QPushButton:pressed{
       </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="presetCombo"/>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="addPresetBtn">
        <property name="text">
-        <string>Add</string>
+        <string>OK</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="cancelPresetBtn">
        <property name="text">
         <string>Cancel</string>
        </property>

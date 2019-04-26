@@ -17,6 +17,7 @@ public:
 
 private:
     Ui::PresetSetupDlg *ui;
+    void initUi();
 };
 
 #endif // PRESETSETUPDLG_H

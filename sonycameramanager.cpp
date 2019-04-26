@@ -25,15 +25,53 @@ void SonyCameraManager::initUdpSocket()
     receiver->bind(DEFAULT_RECEIVE_PORTNUM);
     connect(receiver , SIGNAL(readyRead()) , this , SLOT(readyToRead()));
 }
+void SonyCameraManager::addCamera(SonyCam *cam)
+{
+    cameraList.append(cam);
+    //add in the file
+
+}
 void SonyCameraManager::removeCamera(SonyCam *cam)
 {
     if(cameraList.contains(cam))
     {
         cameraList.removeOne(cam);
-        //stop everything doing with this cam
+        //remove from the file
         //TODO
         delete cam;
     }
+}
+SonyCam* SonyCameraManager::getCam(int index)
+{
+    if(index < cameraList.length())
+        return cameraList.at(index);
+    else
+        return nullptr;
+}
+int SonyCameraManager::getCamCount()
+{
+    return cameraList.length();
+}
+SonyCam* SonyCameraManager::getCurCam()
+{
+    return curCam;
+}
+void SonyCameraManager::setCurCam(int index)
+{
+    if(index < cameraList.length())
+    {
+        this->curCam = cameraList.at(index);
+        emit curCamChanged();
+    }
+}
+void SonyCameraManager::setCurCam(SonyCam *cam)
+{
+    this->curCam = cam;
+    emit curCamChanged();
+}
+int SonyCameraManager::getCamIndex(SonyCam *cam)
+{
+    return cameraList.indexOf(cam);
 }
 void SonyCameraManager::readyToRead()
 {
@@ -41,11 +79,9 @@ void SonyCameraManager::readyToRead()
         QNetworkDatagram datagram = receiver->receiveDatagram();
         processReceivedData(datagram);
         qDebug()<<datagram.data().toHex()<<datagram.senderAddress().toString();
-        //process received datagram
-        //TODO
     }
 }
-void SonyCameraManager::processReceivedData(QDataStream *datagram)
+void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
 {
     //check ip address is current active camera
     //TODO
@@ -53,7 +89,6 @@ void SonyCameraManager::processReceivedData(QDataStream *datagram)
     int commandNum;
     //parse data
     //TODO
-
 
 }
 

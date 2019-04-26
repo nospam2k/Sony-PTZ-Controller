@@ -6,9 +6,15 @@ PresetSetupDlg::PresetSetupDlg(QWidget *parent) :
     ui(new Ui::PresetSetupDlg)
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+    initUi();
 }
 
 PresetSetupDlg::~PresetSetupDlg()
 {
     delete ui;
+}
+void PresetSetupDlg::initUi()
+{
+
 }

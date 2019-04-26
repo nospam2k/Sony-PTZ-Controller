@@ -20,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    for(int i = 0 ; i < buttonList.length() ; i ++)
+    {
+        CameraBtn *btn = buttonList.at(0);
+        buttonList.removeAt(0);;
+        delete btn;
+    }
     delete ui;
 }
 void MainWindow::initUi()
@@ -38,7 +44,12 @@ void MainWindow::initUi()
     connect(ui->moveSpeedDial , SIGNAL(valueChanged(int)) , this , SLOT(speedChanged(int)));
 
     connect(App()->getCameraManager() , SIGNAL(curCamChanged()) , this , SLOT(curCamChanged()));
-    connect(App()->getCameraManager() , SIGNAL(curCamParamChanged()) , this , SLOT(curCamParamChanged()));
+    connect(App()->getCameraManager() , SIGNAL(curCamPresetsChanged()) , this , SLOT(curCamPresetsChanged()));
+    connect(App()->getCameraManager() , SIGNAL(curCamError()) , this , SLOT(curCamError()));
+    connect(App()->getCameraManager() , SIGNAL(curCamConnected()) , this , SLOT(curCamConnected()));
+    connect(App()->getCameraManager() , SIGNAL(curCamDisconnected()) , this , SLOT(curCamDisconnected()));
+    connect(App()->getCameraManager() , SIGNAL(curCamIpChanged()) , this , SLOT(curCamIpChanged()));
+    connect(App()->getCameraManager() , SIGNAL(reportData(QString)) , this , SLOT(onReportReady(QString)));
 
     ui->waitTimeDial->setValue(1);
     ui->moveSpeedDial->setValue(1);
@@ -155,14 +166,19 @@ void MainWindow::stopLooping()
 void MainWindow::waitTimeChanged(int curWaitTime)
 {
     ui->waitTimeLcd->display(curWaitTime);
-    //change wait time in sonycameramanager
-    //TODO
+    //change wait time of camera
+    SonyCam* curCam = App()->getCameraManager()->getCurCam();
+    if(curCam == nullptr)
+        return;
+    curCam->setWaitTime(curWaitTime);
 }
 void MainWindow::speedChanged(int curSpeed)
 {
     ui->moveSpeedLcd->display(curSpeed);
-    //change speed of camera
-    //TODO
+    SonyCam* curCam = App()->getCameraManager()->getCurCam();
+    if(curCam == nullptr)
+        return;
+    curCam->setCallPresetSpeed(curSpeed);
 }
 void MainWindow::cameraBtnClicked(CameraBtn* btn)
 {
@@ -204,8 +220,11 @@ void MainWindow::curCamChanged()
         ui->presetList->clear();
         ui->waitTimeDial->setValue(1);
         ui->moveSpeedDial->setValue(1);
-
     }
+}
+void MainWindow::onReportReady(QString report)
+{
+    ui->txRxList->append(report);
 }
 void MainWindow::showCameraStatus(int status)
 {
@@ -225,7 +244,23 @@ void MainWindow::showCameraStatus(int status)
         break;
     }
 }
-void MainWindow::curCamParamChanged()
+void MainWindow::curCamPresetsChanged()
 {
 
+}
+void MainWindow::curCamError()
+{
+    App()->showMessage(App()->getCameraManager()->getCurCam()->getErrorMessage());
+}
+void MainWindow::curCamConnected()
+{
+    showCameraStatus(0);
+}
+void MainWindow::curCamDisconnected()
+{
+    showCameraStatus(1);
+}
+void MainWindow::curCamIpChanged()
+{
+    ui->ipLcd->display(App()->getCameraManager()->getCurCam()->getCameraIp());
 }

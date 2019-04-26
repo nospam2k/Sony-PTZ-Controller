@@ -28,7 +28,25 @@ void SonyCameraManager::initUdpSocket()
 void SonyCameraManager::addCamera(SonyCam *cam)
 {
     cameraList.append(cam);
+    connect(cam, &SonyCam::cameraConnected , [this , cam]{
+        if(cam == this->curCam)
+            emit this->curCamConnected();
+    });
+    connect(cam, &SonyCam::cameraDisconnected , [this , cam]{
+        if(cam == this->curCam)
+            emit this->curCamDisconnected();
+    });
+    connect(cam, &SonyCam::cameraError , [this , cam]{
+        if(cam == this->curCam)
+            emit this->curCamError();
+    });
+    connect(cam , &SonyCam::cameraIpChanged , [this , cam]{
+        if(cam == this->curCam)
+            emit this->curCamIpChanged();
+    });
+    connect(cam , SIGNAL(messageSent(int,QString,int,SonyCam*)) , this , SLOT(onMessageSent(int,QString,int,SonyCam*)));
     //add in the file
+    //TODO
 
 }
 void SonyCameraManager::removeCamera(SonyCam *cam)
@@ -81,14 +99,50 @@ void SonyCameraManager::readyToRead()
         qDebug()<<datagram.data().toHex()<<datagram.senderAddress().toString();
     }
 }
+//char *readBuffer = new char[MAX_BUFFER_SIZE];
+//int currentPos = -1;//current byte position -1:did not find the preamble
 void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
 {
     //check ip address is current active camera
-    //TODO
-    QString command;
-    int commandNum;
+    if(curCam == nullptr)
+        return;
+    if(datagram.senderAddress().toString() != curCam->getCameraIp())
+        return;
     //parse data
-    //TODO
+
+    QByteArray temp = datagram.data();
+    if(temp.length() < 4)
+        return;
+    int type = temp.left(2).toUInt();
+    QString bytes = temp.mid(2).toHex();
+    int commandNum = temp.mid(2 , 2).toUInt();
+    buildReportData(type , bytes , commandNum);
 
 }
-
+void SonyCameraManager::buildReportData(int type , QString bytes , int comIndex)
+{
+    QString temp;
+    switch(type)
+    {
+    case COMMAND_HEAD:
+    case CONTROL_COMMAND_HEAD:
+    case INQUERY_HEAD:
+        temp += "Tx: ";
+        break;
+    case CONTROL_COMMAND_REPLY_HEAD:
+    case REPLY_HEAD:
+        temp += "Rx: ";
+        break;
+    }
+    temp += bytes;
+    temp += " " + QString::number(comIndex);
+    qDebug()<<temp;
+    emit reportData(temp);
+}
+void SonyCameraManager::onMessageSent(int type , QString bytes , int comIndex , SonyCam* cam)
+{
+    qDebug()<<bytes;
+    if(cam != curCam)
+        return;
+    buildReportData(type , bytes.mid(4) , comIndex);
+}

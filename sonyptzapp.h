@@ -20,6 +20,7 @@ public:
     AppSettings *getAppSettings();
     SonyCameraManager *getCameraManager();
     MainWindow *getMainWindow();
+    void showMessage(QString msg);
 
 private:
     AppSettings *settings;

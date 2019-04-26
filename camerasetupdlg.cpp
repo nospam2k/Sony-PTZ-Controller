@@ -20,6 +20,11 @@ void CameraSetupDlg::initUi()
 {
     connect(ui->okBtn , SIGNAL(clicked(bool)) , this , SLOT(saveCamera()));
     connect(ui->cancelBtn , SIGNAL(clicked(bool)) , this , SLOT(cancelCamera()));
+    if(camToEdit != nullptr)
+    {
+        ui->ipEdit->setText(camToEdit->getCameraIp());
+        ui->nameEdit->setText(camToEdit->getCameraName());
+    }
 }
 void CameraSetupDlg::saveCamera()
 {

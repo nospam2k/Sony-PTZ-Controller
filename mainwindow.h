@@ -41,7 +41,15 @@ private slots:
     void speedChanged(int curSpeed);
 
     void curCamChanged();
-    void curCamParamChanged();
+    void curCamPresetsChanged();
+    void curCamIpChanged();
+    void curCamError();
+    void curCamConnected();
+    void curCamDisconnected();
+
+    void onReportReady(QString report);
+
+
 
 
 

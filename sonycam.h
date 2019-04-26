@@ -26,6 +26,7 @@ public:
 
 
     void goToPreset(unsigned int presetNum , unsigned int speed);
+    void setPreset(unsigned int presetNum);
     void moveOneLeft(unsigned int panSpeed);
     void moveOneRight(unsigned int panSpeed);
     void moveOneUp(unsigned int tiltSpeed);
@@ -39,6 +40,7 @@ public:
     void stopFocusing();
     void stopMoving();
     void stopZooming();
+    void initMessaging();
 
     void setCameraIp(QString ip);
     void setCameraName(QString name);
@@ -51,7 +53,9 @@ public:
     void stopLooping();
 
     void setCallPresetSpeed(unsigned int speed);
-    void setWaiteTime(unsigned int seconds);
+    void setWaitTime(unsigned int seconds);
+
+    QString getErrorMessage();
 
 
 private:
@@ -85,7 +89,13 @@ private slots:
     void onError();
     void onTimerOneSec();
 signals:
-    void cameraNameChange();
+    void cameraNameChanged();
+    void cameraConnected();
+    void cameraDisconnected();
+    void cameraError();
+    void cameraIpChanged();
+
+    void messageSent(int type , QString bytes , int comIndex , SonyCam* cam);
 
 };
 

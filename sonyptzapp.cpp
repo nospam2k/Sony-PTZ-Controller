@@ -1,5 +1,5 @@
 #include "sonyptzapp.h"
-
+#include <QMessageBox>
 SonyPTZApp::SonyPTZApp(int argc, char *argv[]):QApplication(argc, argv)
 {
     //create writable location
@@ -71,4 +71,10 @@ void SonyPTZApp::showUi()
 void SonyPTZApp::hideUi()
 {
     mainWin->close();
+}
+void SonyPTZApp::showMessage(QString msg)
+{
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+    msgBox.exec();
 }

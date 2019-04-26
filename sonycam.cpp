@@ -35,6 +35,10 @@ void SonyCam::initTimer()
 void SonyCam::onClientConnected()
 {
     isConnected = true;
+    //initiate
+    commandIndex = 0;
+    toSendPacket[8] = 0x01;
+    sendPacket(1);
     //TODO
 }
 void SonyCam::onClientDisconnected()
@@ -60,10 +64,6 @@ void SonyCam::onTimerOneSec()
 void SonyCam::connectToCamera()
 {
     connector->connectToHost(cameraIp , DEFAULT_TARGET_PORTNUM);
-    //initiate
-    commandIndex = 0;
-    toSendPacket[8] = 0x01;
-    sendPacket(1);
 }
 void SonyCam::disconnectFromCamera()
 {

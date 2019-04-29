@@ -3,12 +3,16 @@
 #include "sonyptzapp.h"
 #include "sonycam.h"
 #include "sonycameramanager.h"
-PresetSetupDlg::PresetSetupDlg(QWidget *parent) :
+#include <string.h>
+PresetSetupDlg::PresetSetupDlg(QWidget *parent , int presetIndex) :
     QDialog(parent),
     ui(new Ui::PresetSetupDlg)
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+    this->presetIndex = presetIndex;
+
+
     initUi();
 }
 
@@ -59,6 +63,9 @@ void PresetSetupDlg::initUi()
         ui->zoomSpeedCombo->addItem(QString::number(i));
         ui->focusSpeedCombo->addItem(QString::number(i));
     }
+
+    if(presetIndex != -1)
+        ui->presetCombo->setCurrentIndex(App()->getCameraManager()->getCurCam()->getPresetList().at(presetIndex).presetNum);
 }
 void PresetSetupDlg::moveUp()
 {
@@ -157,6 +164,8 @@ void PresetSetupDlg::setPreset()
     SonyCam* cam = App()->getCameraManager()->getCurCam();
     if(cam == nullptr)
         return;
+    //should save preset name in file
+    //TODO
     cam->setPreset(ui->presetCombo1->currentIndex());
 }
 void PresetSetupDlg::callPreset()
@@ -168,6 +177,25 @@ void PresetSetupDlg::callPreset()
 }
 void PresetSetupDlg::savePresetSetup()
 {
+    //store presets in curcam
+    if(presetIndex == -1)//create
+    {
+        PRESET preset;
+        preset.presetNum = ui->presetCombo->currentIndex();
+        //should change to preset name from file
+        //TODO
+        preset.presetName = QString("Preset " + QString::number(preset.presetNum)).left(10);
+        App()->getCameraManager()->getCurCam()->addPreset(preset);
+    }
+    else//edit
+    {
+        PRESET preset;
+        preset.presetNum = ui->presetCombo->currentIndex();
+        //should change to preset name from file
+        //TODO
+        preset.presetName = QString("Preset " + QString::number(preset.presetNum)).left(10);
+        App()->getCameraManager()->getCurCam()->replacePreset(preset , presetIndex);
+    }
     accept();
 }
 void PresetSetupDlg::cancelPresetSetup()

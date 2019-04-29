@@ -52,11 +52,20 @@ void SonyCam::onTimerOneSec()
 {
     //increase counter
     counter ++;
+    curPresetIndex ++;
     if(counter >= waiteTime)
     {
         counter = 0;
         //call next preset
-        //TODO
+        if((curPresetIndex - 1) < presetLoop.length())
+        {
+            callPreset(presetLoop.at(curPresetIndex - 1).presetNum);
+        }
+        else
+        {
+            curPresetIndex = 0;
+        }
+
     }
 }
 void SonyCam::connectToCamera()
@@ -100,7 +109,7 @@ void SonyCam::initMessaging()
     sendPacket(1);
     emit messageSent(CONTROL_COMMAND_HEAD , QByteArray(toSendPacket , 9).toHex() , commandIndex , this);
 }
-void SonyCam::goToPreset(unsigned int presetNum , unsigned int speed)
+void SonyCam::setPresetSpeed(unsigned int presetNum , unsigned int speed)
 {
     //81 01 7E 01 0B pp qq FF
     createMessageHeader(COMMAND_HEAD , 8);
@@ -149,19 +158,29 @@ void SonyCam::loadPresets()
     //load presets from the ini file
     //TODO
 }
-void SonyCam::addPreset(int presetNum)
+void SonyCam::addPreset(PRESET preset)
 {
-    presetLoop.append(presetNum);
+    presetLoop.append(preset);
 }
 void SonyCam::removePreset(int presetIndex)
 {
     presetLoop.removeAt(presetIndex);
+}
+void SonyCam::replacePreset(PRESET preset, int presetIndex)
+{
+    presetLoop.replace(presetIndex , preset);
+
+}
+QList<PRESET> SonyCam::getPresetList()
+{
+    return this->presetLoop;
 }
 void SonyCam::startLooping()
 {
     //start timer
     timer->start(1000);//start looping every 1 sec
     counter = 0;
+    curPresetIndex = 0;
 }
 void SonyCam::stopLooping()
 {
@@ -175,6 +194,10 @@ void SonyCam::stopLooping()
 void SonyCam::setCallPresetSpeed(unsigned int speed)
 {
     this->callPresetSpeed = speed;
+    for(int i = 0 ; i < presetLoop.length() ; i ++)
+    {
+        setPresetSpeed(presetLoop.at(i).presetNum , speed);
+    }
 }
 void SonyCam::setWaitTime(unsigned int seconds)
 {

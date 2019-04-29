@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include "camerabtn.h"
+#include "listitem.h"
 namespace Ui {
 class MainWindow;
 }
@@ -23,6 +24,12 @@ private:
     void cameraBtnClicked(CameraBtn *btn);
 
     void showCameraStatus(int status);//0 connected, 1 disconnected, 2 default
+
+    void loadCameraBtnList();
+    void loadPresetList();
+
+    void addPresetWidget(int presetIndex);
+    ListItem* getListItem(int presetIndex);
 private slots:
     void addCamera();
     void editCameraIp();

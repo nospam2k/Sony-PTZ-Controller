@@ -12,12 +12,13 @@ class PresetSetupDlg : public QDialog
     Q_OBJECT
 
 public:
-    explicit PresetSetupDlg(QWidget *parent = 0);
+    explicit PresetSetupDlg(QWidget *parent = 0, int presetIndex = -1);//presetIndex is not presetNumber. it is an index in presetList
     ~PresetSetupDlg();
 
 private:
     Ui::PresetSetupDlg *ui;
     void initUi();
+    int presetIndex;
 private slots:
     void moveUp();
     void moveDown();

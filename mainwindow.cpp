@@ -74,6 +74,10 @@ void MainWindow::addCamera()
             ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->addWidget(buttonList.at(i) , i / 5 , i % 5);
     }
 }
+void MainWindow::loadCameraBtnList()
+{
+
+}
 void MainWindow::editCameraIp()
 {
 //    CameraSetupDlg camSetupDlg();
@@ -139,28 +143,49 @@ void MainWindow::saveAsFile()
 
 void MainWindow::removePreset()
 {
-
+    //remove from class instance
+    //remove from the list
+    //remove from the file
 }
 void MainWindow::addPreset()
 {
+    SonyCam* cam = App()->getCameraManager()->getCurCam();
+    if(cam == nullptr)
+        return;
     PresetSetupDlg presetSetupDlg;
-    if(presetSetupDlg.exec())
+    if(presetSetupDlg.exec() == QDialog::Accepted)
     {
-
+        PRESET preset;
+        preset = cam->getPresetList().at(cam->getPresetList().length() - 1);
+        addPresetWidget(cam->getPresetList().length() - 1);
     }
-    else
-    {
 
-    }
 }
+void MainWindow::loadPresetList()
+{
+    SonyCam *curCam = App()->getCameraManager()->getCurCam();
+    if(curCam == nullptr)
+        return;
 
+}
+void MainWindow::addPresetWidget(int presetIndex)
+{
+    QListWidgetItem *item = new QListWidgetItem(ui->presetList);
+    ui->presetList->addItem(item);
+    item->setSizeHint(QSize(ui->presetList->size().width() - 4 , 26));
+    ui->presetList->setItemWidget(item , getListItem(presetIndex));
+}
+ListItem* MainWindow::getListItem(int presetIndex)
+{
+    return new ListItem(ui->presetList , presetIndex);
+}
 void MainWindow::startLooping()
 {
-
+    App()->getCameraManager()->getCurCam()->startLooping();
 }
 void MainWindow::stopLooping()
 {
-
+    App()->getCameraManager()->getCurCam()->stopLooping();
 }
 
 void MainWindow::waitTimeChanged(int curWaitTime)

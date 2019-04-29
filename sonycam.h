@@ -10,7 +10,10 @@
 #define CONTROL_COMMAND_HEAD 0x0200
 #define CONTROL_COMMAND_REPLY_HEAD 0x0201
 #define REPLY_HEAD 0x0111
-
+typedef struct PRESET{
+    int presetNum;
+    QString presetName;
+}PRESET;
 class SonyCam : public QObject
 {
     Q_OBJECT
@@ -25,7 +28,7 @@ public:
     void disconnectFromCamera();
 
 
-    void goToPreset(unsigned int presetNum , unsigned int speed);
+    void setPresetSpeed(unsigned int presetNum , unsigned int speed);
     void setPreset(unsigned int presetNum);
     void callPreset(unsigned int presetNum);
     void moveOneLeft(unsigned int panSpeed);
@@ -57,7 +60,10 @@ public:
     void setWaitTime(unsigned int seconds);
 
     QString getErrorMessage();
-
+    void addPreset(PRESET preset);
+    void removePreset(int presetIndex);
+    void replacePreset(PRESET preset, int presetIndex);
+    QList<PRESET> getPresetList();
 
 private:
 
@@ -68,15 +74,15 @@ private:
     unsigned int commandIndex;//used to build command header
     char toSendPacket[24];//to send packet max 24 byte
 
-    QList<int> presetLoop;
+    QList<PRESET> presetLoop;
     int callPresetSpeed = 1;//1 ~ 18
     int waiteTime = 10;//unit is second
     QTimer* timer;
     int counter;
+    int curPresetIndex;
 
     void loadPresets();
-    void addPreset(int presetNum);
-    void removePreset(int presetIndex);
+
 
     void initUdpConnector();
     void initTimer();

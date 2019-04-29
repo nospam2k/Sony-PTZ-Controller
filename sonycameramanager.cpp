@@ -1,148 +1,394 @@
-#include "sonycameramanager.h"
-#include <QDebug>
-SonyCameraManager::SonyCameraManager(QObject *parent) : QObject(parent)
-{
-    initUdpSocket();
-}
-SonyCameraManager::~SonyCameraManager()
-{
-    for(int i = 0 ; i < cameraList.length() ; i ++)
-    {
-        SonyCam *temp = cameraList.at(0);
-        cameraList.removeAt(0);
-        //stop everything doing with this cam
-        //TODO
-        delete temp;
-    }
+#include "sonycam.h"
 
-    if(receiver->isOpen())
-        receiver->close();
-    delete receiver;
-}
-void SonyCameraManager::initUdpSocket()
+SonyCam::SonyCam(QString ip, unsigned int portNum , QString cameraName)
 {
-    receiver = new QUdpSocket();
-    receiver->bind(DEFAULT_RECEIVE_PORTNUM);
-    connect(receiver , SIGNAL(readyRead()) , this , SLOT(readyToRead()));
+    isConnected = false;
+    this->cameraIp = ip;
+    this->portNum = portNum;
+    this->cameraName = cameraName;
+    initUdpConnector();
+    initTimer();
+    //load presets list
+    loadPresets();
 }
-void SonyCameraManager::addCamera(SonyCam *cam)
+SonyCam::~SonyCam()
 {
-    cameraList.append(cam);
-    connect(cam, &SonyCam::cameraConnected , [this , cam]{
-        if(cam == this->curCam)
-            emit this->curCamConnected();
-    });
-    connect(cam, &SonyCam::cameraDisconnected , [this , cam]{
-        if(cam == this->curCam)
-            emit this->curCamDisconnected();
-    });
-    connect(cam, &SonyCam::cameraError , [this , cam]{
-        if(cam == this->curCam)
-            emit this->curCamError();
-    });
-    connect(cam , &SonyCam::cameraIpChanged , [this , cam]{
-        if(cam == this->curCam)
-            emit this->curCamIpChanged();
-    });
-    connect(cam , SIGNAL(messageSent(int,QString,int,SonyCam*)) , this , SLOT(onMessageSent(int,QString,int,SonyCam*)));
-    //add in the file
+    stopLooping();
+    delete timer;
+    if(connector->isOpen())
+        connector->close();
+    delete connector;
+
+}
+void SonyCam::initUdpConnector()
+{
+    connector = new QUdpSocket(this);
+    connect(connector , SIGNAL(connected()) , this , SLOT(onClientConnected()));
+    connect(connector , SIGNAL(disconnected()) , this , SLOT(onClientDisconnected()));
+    connect(connector , SIGNAL(error(QAbstractSocket::SocketError)) , this , SLOT(onError()));
+}
+void SonyCam::initTimer()
+{
+    timer = new QTimer(this);
+    connect(timer , SIGNAL(timeout()) , this , SLOT(onTimerOneSec()));
+}
+void SonyCam::onClientConnected()
+{
+    isConnected = true;
+    emit cameraConnected();
+    //initiate
+    initMessaging();
+}
+void SonyCam::onClientDisconnected()
+{
+    isConnected = false;
+    emit cameraDisconnected();
+}
+void SonyCam::onError()
+{
+    emit cameraError();
+}
+void SonyCam::onTimerOneSec()
+{
+    //increase counter
+    counter ++;
+    if(counter >= waiteTime)
+    {
+        counter = 0;
+        //call next preset
+        //TODO
+    }
+}
+void SonyCam::connectToCamera()
+{
+    qDebug()<<cameraIp;
+    connector->connectToHost(cameraIp , DEFAULT_TARGET_PORTNUM);
+}
+void SonyCam::disconnectFromCamera()
+{
+    connector->disconnectFromHost();
+}
+void SonyCam::setCameraIp(QString ip)
+{
+    this->cameraIp = ip;
+    disconnectFromCamera();
+    emit cameraIpChanged();
+}
+void SonyCam::setCameraName(QString name)
+{
+    this->cameraName = name;
+    emit cameraNameChanged();
+}
+void SonyCam::setCameraPort(unsigned int port)
+{
+    this->portNum = port;
+    disconnectFromCamera();
+}
+QString SonyCam::getCameraIp()
+{
+    return cameraIp;
+}
+QString SonyCam::getCameraName()
+{
+    return cameraName;
+}
+void SonyCam::initMessaging()
+{
+    commandIndex = 0;
+    createMessageHeader(CONTROL_COMMAND_HEAD , 1);
+    toSendPacket[8] = 0x01;
+    sendPacket(1);
+    emit messageSent(CONTROL_COMMAND_HEAD , QByteArray(toSendPacket , 9).toHex() , commandIndex , this);
+}
+void SonyCam::goToPreset(unsigned int presetNum , unsigned int speed)
+{
+    //81 01 7E 01 0B pp qq FF
+    createMessageHeader(COMMAND_HEAD , 8);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x7e;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = 0x0b;
+    toSendPacket[13] = (char)(presetNum % 64);//max preset number 64
+    toSendPacket[14] = (char)(speed % 18 + 1);//max speed 18
+    toSendPacket[15] = 0xff;
+    sendPacket(8);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 16).toHex() , commandIndex , this);
+}
+void SonyCam::setPreset(unsigned int presetNum)
+{
+    createMessageHeader(COMMAND_HEAD , 7);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x3f;
+    toSendPacket[12] = 0x01;
+    toSendPacket[13] = (char)(presetNum % 255);
+    toSendPacket[14] = 0xff;
+    sendPacket(7);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 15).toHex() , commandIndex , this);
+}
+void SonyCam::loadPresets()
+{
+    //load presets from the ini file
     //TODO
-
 }
-void SonyCameraManager::removeCamera(SonyCam *cam)
+void SonyCam::addPreset(int presetNum)
 {
-    if(cameraList.contains(cam))
-    {
-        cameraList.removeOne(cam);
-        //remove from the file
-        //TODO
-        delete cam;
-    }
+    presetLoop.append(presetNum);
 }
-SonyCam* SonyCameraManager::getCam(int index)
+void SonyCam::removePreset(int presetIndex)
 {
-    if(index < cameraList.length())
-        return cameraList.at(index);
+    presetLoop.removeAt(presetIndex);
+}
+void SonyCam::startLooping()
+{
+    //start timer
+    timer->start(1000);//start looping every 1 sec
+    counter = 0;
+}
+void SonyCam::stopLooping()
+{
+    //stop timer
+    timer->stop();
+    //send message
+//    stopMoving();
+//    stopZooming();
+//    stopFocusing();
+}
+void SonyCam::setCallPresetSpeed(unsigned int speed)
+{
+    this->callPresetSpeed = speed;
+}
+void SonyCam::setWaitTime(unsigned int seconds)
+{
+    this->waiteTime = seconds;
+}
+void SonyCam::moveOneLeft(unsigned int panSpeed)
+{
+    //81 01 06 01 vv ww 01 03 FF
+    createMessageHeader(COMMAND_HEAD , 9);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = (char)(panSpeed % 18 + 1);//max pan speed 18
+    toSendPacket[13] = 5;//default tilt speed
+    toSendPacket[14] = 0x01;
+    toSendPacket[15] = 0x03;
+    toSendPacket[16] = 0xff;
+    sendPacket(9);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 17).toHex() , commandIndex , this);
+}
+void SonyCam::moveOneRight(unsigned int panSpeed)
+{
+    //81 01 06 01 vv ww 02 03 FF
+    createMessageHeader(COMMAND_HEAD , 9);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = (char)(panSpeed % 18 + 1);//max pan speed 18
+    toSendPacket[13] = 5;//default tilt speed
+    toSendPacket[14] = 0x02;
+    toSendPacket[15] = 0x03;
+    toSendPacket[16] = 0xff;
+    sendPacket(9);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 17).toHex() , commandIndex , this);
+}
+void SonyCam::moveOneUp(unsigned int tiltSpeed)
+{
+    //81 01 06 01 vv ww 03 01 FF
+    createMessageHeader(COMMAND_HEAD , 9);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = 5;//default pan speed
+    toSendPacket[13] = (char)(tiltSpeed % 18 + 1);//max tilt speed 18
+    toSendPacket[14] = 0x03;
+    toSendPacket[15] = 0x01;
+    toSendPacket[16] = 0xff;
+    sendPacket(9);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 17).toHex() , commandIndex , this);
+}
+void SonyCam::moveOneDown(unsigned int tiltSpeed)
+{
+    //81 01 06 01 vv ww 03 02 FF
+    createMessageHeader(COMMAND_HEAD , 9);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = 5;//default pan speed
+    toSendPacket[13] = (char)(tiltSpeed % 18 + 1);//max tilt speed 18
+    toSendPacket[14] = 0x03;
+    toSendPacket[15] = 0x02;
+    toSendPacket[16] = 0xff;
+    sendPacket(9);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 17).toHex() , commandIndex , this);
+}
+void SonyCam::moveHome()
+{
+    //81 01 06 04 FF
+    createMessageHeader(COMMAND_HEAD , 5);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x04;
+    toSendPacket[12] = 0xff;
+    sendPacket(5);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 13).toHex() , commandIndex , this);
+}
+void SonyCam::zoomOneIn(unsigned int zoomSpeed)
+{
+    zoomSpeed = zoomSpeed % 8;//max zoom speed 7
+    //81 01 04 07 2p FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x07;
+    toSendPacket[12] = 0x20 + zoomSpeed;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
+}
+void SonyCam::zoomOneOut(unsigned int zoomSpeed)
+{
+    zoomSpeed = zoomSpeed % 8;//max zoom speed 7
+    //81 01 04 07 3p FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x07;
+    toSendPacket[12] = 0x30 + zoomSpeed;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
+}
+void SonyCam::focusOneIn(unsigned int focusSpeed)
+{
+    focusSpeed = focusSpeed % 8;//max focus speed 7
+    //81 01 04 08 3p FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x08;
+    toSendPacket[12] = 0x30 + focusSpeed;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
+}
+void SonyCam::focusOneOut(unsigned int focusSpeed)
+{
+    focusSpeed = focusSpeed % 8;//max focus speed 7
+    //81 01 04 08 2p FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x08;
+    toSendPacket[12] = 0x20 + focusSpeed;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
+}
+void SonyCam::stopFocusing()
+{
+    //81 01 04 08 00 FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x80;
+    toSendPacket[12] = 0x00;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
+}
+void SonyCam::setFocusMode(bool autoFocus)
+{
+    //81 01 04 38 02 FF - auto
+    //81 01 04 38 03 FF - manual
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x38;
+    if(autoFocus)
+        toSendPacket[12] = 0x02;
     else
-        return nullptr;
+        toSendPacket[12] = 0x03;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
 }
-int SonyCameraManager::getCamCount()
+void SonyCam::stopZooming()
 {
-    return cameraList.length();
+    //81 01 04 07 00 FF
+    createMessageHeader(COMMAND_HEAD , 6);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x07;
+    toSendPacket[12] = 0x00;
+    toSendPacket[13] = 0xff;
+    sendPacket(6);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
 }
-SonyCam* SonyCameraManager::getCurCam()
+void SonyCam::stopMoving()
 {
-    return curCam;
+    //81 01 06 01 vv ww 03 03 FF
+    createMessageHeader(COMMAND_HEAD , 9);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x06;
+    toSendPacket[11] = 0x01;
+    toSendPacket[12] = 5;//default pan speed
+    toSendPacket[13] = 5;//default tilt speed
+    toSendPacket[14] = 0x03;
+    toSendPacket[15] = 0x03;
+    toSendPacket[16] = 0xff;
+    sendPacket(9);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 17).toHex() , commandIndex , this);
 }
-void SonyCameraManager::setCurCam(int index)
+QString SonyCam::getErrorMessage()
 {
-    if(index < cameraList.length())
-    {
-        this->curCam = cameraList.at(index);
-        emit curCamChanged();
-    }
+    return connector->errorString();
 }
-void SonyCameraManager::setCurCam(SonyCam *cam)
+/**
+ * create message 8 byte message header
+ * @brief createMessageHeader
+ * @param cmdHeader: 0x0100, 0x0110, 0x0111, 0x0200, 0x0201
+ * @param payloadLen: 1 ~ 16
+ */
+void SonyCam::createMessageHeader(const unsigned int cmdHeader, const unsigned int payloadLen)
 {
-    this->curCam = cam;
-    emit curCamChanged();
-}
-int SonyCameraManager::getCamIndex(SonyCam *cam)
-{
-    return cameraList.indexOf(cam);
-}
-void SonyCameraManager::readyToRead()
-{
-    while (receiver->hasPendingDatagrams()) {
-        QNetworkDatagram datagram = receiver->receiveDatagram();
-        processReceivedData(datagram);
-        qDebug()<<datagram.data().toHex()<<datagram.senderAddress().toString();
-    }
-}
-//char *readBuffer = new char[MAX_BUFFER_SIZE];
-//int currentPos = -1;//current byte position -1:did not find the preamble
-void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
-{
-    //check ip address is current active camera
-    if(curCam == nullptr)
-        return;
-    if(datagram.senderAddress().toString() != curCam->getCameraIp())
-        return;
-    //parse data
+    memset(toSendPacket , 0 , 24);
+    toSendPacket[0] = cmdHeader / 256;
+    toSendPacket[1] = cmdHeader % 256;
+    toSendPacket[2] = payloadLen / 256;
+    toSendPacket[3] = payloadLen % 256;
 
-    QByteArray temp = datagram.data();
-    if(temp.length() < 4)
-        return;
-    int type = temp.left(2).toUInt();
-    QString bytes = temp.mid(2).toHex();
-    int commandNum = temp.mid(2 , 2).toUInt();
-    buildReportData(type , bytes , commandNum);
+    //Ignore 5th and 6th bytes...
 
+    commandIndex ++;
+    if(commandIndex > 0xffff)
+        commandIndex = 0;
+    toSendPacket[6] = commandIndex / 256;
+    toSendPacket[7] = commandIndex % 256;
 }
-void SonyCameraManager::buildReportData(int type , QString bytes , int comIndex)
+/**
+ * send packet to the camera tcp server
+ * @brief MainWindow::sendPacket
+ * @param packet: packet to be sent
+ * @param len: length of data in packet
+ */
+void SonyCam::sendPacket(unsigned int len)
 {
-    QString temp;
-    switch(type)
-    {
-    case COMMAND_HEAD:
-    case CONTROL_COMMAND_HEAD:
-    case INQUERY_HEAD:
-        temp += "Tx: ";
-        break;
-    case CONTROL_COMMAND_REPLY_HEAD:
-    case REPLY_HEAD:
-        temp += "Rx: ";
-        break;
-    }
-    temp += bytes;
-    temp += " " + QString::number(comIndex);
-    qDebug()<<temp;
-    emit reportData(temp);
-}
-void SonyCameraManager::onMessageSent(int type , QString bytes , int comIndex , SonyCam* cam)
-{
-    qDebug()<<bytes;
-    if(cam != curCam)
-        return;
-    buildReportData(type , bytes.mid(4) , comIndex);
+    QByteArray temp(toSendPacket , len + 8);
+    connector->write(temp);
 }

@@ -61,6 +61,7 @@ void SonyCam::onTimerOneSec()
 }
 void SonyCam::connectToCamera()
 {
+    qDebug()<<cameraIp;
     connector->connectToHost(cameraIp , DEFAULT_TARGET_PORTNUM);
 }
 void SonyCam::disconnectFromCamera()
@@ -116,12 +117,28 @@ void SonyCam::goToPreset(unsigned int presetNum , unsigned int speed)
 }
 void SonyCam::setPreset(unsigned int presetNum)
 {
+    //8x 01 04 3F 01 pp FF
     createMessageHeader(COMMAND_HEAD , 7);
     toSendPacket[8] = 0x81;
     toSendPacket[9] = 0x01;
     toSendPacket[10] = 0x04;
     toSendPacket[11] = 0x3f;
     toSendPacket[12] = 0x01;
+    toSendPacket[13] = (char)(presetNum % 255);
+    toSendPacket[14] = 0xff;
+    sendPacket(7);
+    emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 15).toHex() , commandIndex , this);
+}
+void SonyCam::callPreset(unsigned int presetNum)
+{
+    //8x 01 04 3F 02 pp FF
+    //8x 01 04 3F 01 pp FF
+    createMessageHeader(COMMAND_HEAD , 7);
+    toSendPacket[8] = 0x81;
+    toSendPacket[9] = 0x01;
+    toSendPacket[10] = 0x04;
+    toSendPacket[11] = 0x3f;
+    toSendPacket[12] = 0x02;
     toSendPacket[13] = (char)(presetNum % 255);
     toSendPacket[14] = 0xff;
     sendPacket(7);
@@ -325,7 +342,7 @@ void SonyCam::setFocusMode(bool autoFocus)
     sendPacket(6);
     emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
 }
-void SonyCam::stopMoving()
+void SonyCam::stopZooming()
 {
     //81 01 04 07 00 FF
     createMessageHeader(COMMAND_HEAD , 6);
@@ -338,7 +355,7 @@ void SonyCam::stopMoving()
     sendPacket(6);
     emit messageSent(COMMAND_HEAD , QByteArray(toSendPacket , 14).toHex() , commandIndex , this);
 }
-void SonyCam::stopZooming()
+void SonyCam::stopMoving()
 {
     //81 01 06 01 vv ww 03 03 FF
     createMessageHeader(COMMAND_HEAD , 9);
@@ -389,5 +406,5 @@ void SonyCam::createMessageHeader(const unsigned int cmdHeader, const unsigned i
 void SonyCam::sendPacket(unsigned int len)
 {
     QByteArray temp(toSendPacket , len + 8);
-    connector->writeDatagram(temp , QHostAddress(cameraIp), DEFAULT_TARGET_PORTNUM);
+    connector->write(temp);
 }

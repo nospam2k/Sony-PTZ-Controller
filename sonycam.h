@@ -27,6 +27,7 @@ public:
 
     void goToPreset(unsigned int presetNum , unsigned int speed);
     void setPreset(unsigned int presetNum);
+    void callPreset(unsigned int presetNum);
     void moveOneLeft(unsigned int panSpeed);
     void moveOneRight(unsigned int panSpeed);
     void moveOneUp(unsigned int tiltSpeed);

@@ -164,7 +164,7 @@ void PresetSetupDlg::callPreset()
     SonyCam* cam = App()->getCameraManager()->getCurCam();
     if(cam == nullptr)
         return;
-    cam->goToPreset(ui->presetCombo2->currentIndex() , 1);
+    cam->callPreset(ui->presetCombo2->currentIndex());
 }
 void PresetSetupDlg::savePresetSetup()
 {

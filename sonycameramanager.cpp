@@ -109,8 +109,7 @@ void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
     if(curCam == nullptr)
         return;
 
-    if(!datagram.senderAddress().isEqual(QHostAddress(curCam->getCameraIp()) , QHostAddress::ConvertV4MappedToIPv4))
-        return;
+
     //parse data
 
     QByteArray temp = datagram.data();
@@ -119,9 +118,12 @@ void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
     int type = (static_cast<unsigned int>(temp.at(0))) * 0x0100 + (static_cast<unsigned int>(temp.at(1)));
 
     QString bytes = temp.mid(8).toHex();
-
+    if(getCam(datagram.senderAddress()) != nullptr && (bytes == "9051ff" || bytes == "9052ff"))
+        getCam(datagram.senderAddress())->onReceiveReply();
     int commandNum = (static_cast<unsigned int>(temp.at(6))) * 0x0100 + (static_cast<unsigned int>(temp.at(7)));
-    buildReportData(type , bytes , commandNum);
+
+    if(datagram.senderAddress().isEqual(QHostAddress(curCam->getCameraIp()) , QHostAddress::ConvertV4MappedToIPv4))
+        buildReportData(type , bytes , commandNum);
 
 }
 void SonyCameraManager::buildReportData(int type , QString bytes , int comIndex)
@@ -152,4 +154,13 @@ void SonyCameraManager::onMessageSent(int type , QString bytes , int comIndex , 
     if(bytes.length() < 16)//2 x 8 = 16 letters for 8 bytes
         return;
     buildReportData(type , bytes.mid(16) , comIndex);
+}
+SonyCam* SonyCameraManager::getCam(QHostAddress ipAddr)
+{
+    for(int i = 0 ; i < cameraList.length() ; i ++)
+    {
+        if(QHostAddress(cameraList.at(i)->getCameraIp()).isEqual(ipAddr , QHostAddress::ConvertV4MappedToIPv4))
+            return cameraList.at(i);
+    }
+    return nullptr;
 }

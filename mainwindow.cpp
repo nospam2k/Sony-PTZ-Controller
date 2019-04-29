@@ -172,7 +172,7 @@ void MainWindow::addPresetWidget(int presetIndex)
 {
     QListWidgetItem *item = new QListWidgetItem(ui->presetList);
     ui->presetList->addItem(item);
-    item->setSizeHint(QSize(ui->presetList->size().width() - 4 , 26));
+    item->setSizeHint(QSize(ui->presetList->size().width() - 4 , 47));
     ui->presetList->setItemWidget(item , getListItem(presetIndex));
 }
 ListItem* MainWindow::getListItem(int presetIndex)

@@ -21,6 +21,7 @@ public:
     void setCurCam(int index);
     void setCurCam(SonyCam* cam);
     int getCamIndex(SonyCam *cam);
+    SonyCam* getCam(QHostAddress ipAddr);
 private:
     QList<SonyCam *> cameraList;
     QUdpSocket *receiver;

@@ -14,6 +14,10 @@ typedef struct PRESET{
     int presetNum;
     QString presetName;
 }PRESET;
+typedef struct COMMAND{
+    char commandByte[24];
+    int commandLength;
+}COMMAND;
 class SonyCam : public QObject
 {
     Q_OBJECT
@@ -22,6 +26,8 @@ public:
     ~SonyCam();
 
     bool isConnected;
+
+    bool isWaitingReply;
 
 
     void connectToCamera();
@@ -65,6 +71,10 @@ public:
     void replacePreset(PRESET preset, int presetIndex);
     QList<PRESET> getPresetList();
 
+    QList<COMMAND *> commandQue;
+    void onReceiveReply();
+
+
 private:
 
     QString cameraIp;
@@ -87,7 +97,11 @@ private:
     void initUdpConnector();
     void initTimer();
     void createMessageHeader(const unsigned int cmdHeader, const unsigned int payloadLen);
-    void sendPacket(unsigned int len);
+
+    void addInTheQue(unsigned int len);
+    void sendPacket();
+
+
 
 private slots:
     //socket signal processing functions
@@ -95,6 +109,7 @@ private slots:
     void onClientDisconnected();
     void onError();
     void onTimerOneSec();
+
 signals:
     void cameraNameChanged();
     void cameraConnected();

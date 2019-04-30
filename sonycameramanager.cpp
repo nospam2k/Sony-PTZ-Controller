@@ -4,7 +4,6 @@
 SonyCameraManager::SonyCameraManager(QObject *parent) : QObject(parent)
 {
     initUdpSocket();
-    loadCameras();
     curCam = nullptr;
 }
 SonyCameraManager::~SonyCameraManager()

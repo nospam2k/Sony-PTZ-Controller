@@ -22,6 +22,9 @@ public:
     void addNewPreset(QString ip , int presetNum);
     void editPreset(QString ip, int presetIndex, int presetNum);
     QString getPresetName(QString ip, int presetNum);
+
+    void setCallPresetSpeed(SonyCam* cam);
+    void setWaitTime(SonyCam* cam);
 private:
     QSettings *cameraIpList;
     QSettings *cameraList;

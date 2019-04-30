@@ -50,8 +50,14 @@ void AppSettings::removeCamera(SonyCam *cam)
 }
 //remove all data from the file when you change something
 //and then save again
-
-
+void AppSettings::setCallPresetSpeed(SonyCam* cam)
+{
+    cameraList->setValue(cam->getCameraIp() + "_callpresetspeed" , cam->getCallPresetSpeed());
+}
+void AppSettings::setWaitTime(SonyCam* cam)
+{
+    cameraList->setValue(cam->getCameraIp() + "_waittime" , cam->getWaitTime());
+}
 QList<QString> AppSettings::getCameraIpList()
 {
     return cameraIpList->allKeys();

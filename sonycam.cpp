@@ -452,6 +452,8 @@ void SonyCam::createMessageHeader(const unsigned int cmdHeader, const unsigned i
  */
 void SonyCam::sendPacket()
 {
+    if(!isConnected)
+        return;
     COMMAND* command = commandQue.at(0);
     QByteArray temp(command->commandByte , command->commandLength);
     connector->write(temp);

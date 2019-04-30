@@ -209,6 +209,7 @@ void MainWindow::waitTimeChanged(int curWaitTime)
     if(curCam == nullptr)
         return;
     curCam->setWaitTime(curWaitTime);
+    App()->getAppSettings()->setWaitTime(curCam);
 }
 void MainWindow::speedChanged(int curSpeed)
 {
@@ -217,6 +218,7 @@ void MainWindow::speedChanged(int curSpeed)
     if(curCam == nullptr)
         return;
     curCam->setCallPresetSpeed(curSpeed);
+    App()->getAppSettings()->setCallPresetSpeed(curCam);
 }
 void MainWindow::cameraBtnClicked(CameraBtn* btn)
 {

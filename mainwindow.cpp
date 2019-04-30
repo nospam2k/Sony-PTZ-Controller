@@ -36,7 +36,6 @@ void MainWindow::initUi()
     connect(ui->connectCamBtn , SIGNAL(clicked(bool)) , this , SLOT(connectToCamera()));
     connect(ui->clearListBtn , SIGNAL(clicked(bool)) , this , SLOT(clearRxTxList()));
     connect(ui->saveListBtn , SIGNAL(clicked(bool)) , this , SLOT(saveAsFile()));
-    connect(ui->removePresetBtn , SIGNAL(clicked(bool)) , this , SLOT(removePreset()));
     connect(ui->addPresetBtn , SIGNAL(clicked(bool)) , this , SLOT(addPreset()));
     connect(ui->startLoopingBtn , SIGNAL(clicked(bool)) , this , SLOT(startLooping()));
     connect(ui->stopLoopingBtn , SIGNAL(clicked(bool)) , this , SLOT(stopLooping()));
@@ -50,9 +49,10 @@ void MainWindow::initUi()
     connect(App()->getCameraManager() , SIGNAL(curCamDisconnected()) , this , SLOT(curCamDisconnected()));
     connect(App()->getCameraManager() , SIGNAL(curCamIpChanged()) , this , SLOT(curCamIpChanged()));
     connect(App()->getCameraManager() , SIGNAL(reportData(QString)) , this , SLOT(onReportReady(QString)));
+    connect(App()->getCameraManager() , SIGNAL(cameraAdded()) , this , SLOT(onCameraAdded()));
 
-    ui->waitTimeDial->setValue(1);
-    ui->moveSpeedDial->setValue(1);
+    ui->waitTimeLcd->display(ui->waitTimeDial->value());
+    ui->moveSpeedLcd->display(ui->moveSpeedDial->value());
 }
 
 void MainWindow::addCamera()
@@ -60,28 +60,41 @@ void MainWindow::addCamera()
     CameraSetupDlg camSetupDlg;
     if(camSetupDlg.exec() == QDialog::Accepted)
     {
-        //create a button
-        CameraBtn *newCamBtn = new CameraBtn(ui->cameraBtnWrapper , App()->getCameraManager()->getCam(App()->getCameraManager()->getCamCount() - 1));
-        auto cameraClicked = [this, newCamBtn]{
-            this->cameraBtnClicked(newCamBtn);
-        };
-        connect(newCamBtn , &QPushButton::clicked , cameraClicked);
-        buttonList.append(newCamBtn);
-        //relayout
-//        for(int i = 0 ; i < buttonList.length() - 1 ; i ++)
-//            ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->removeWidget(buttonList.at(i));
-        for(int i = 0 ; i < buttonList.length() ; i ++)
-            ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->addWidget(buttonList.at(i) , i / 5 , i % 5);
+//        //create a button
+//        CameraBtn *newCamBtn = new CameraBtn(ui->cameraBtnWrapper , App()->getCameraManager()->getCam(App()->getCameraManager()->getCamCount() - 1));
+//        auto cameraClicked = [this, newCamBtn]{
+//            this->cameraBtnClicked(newCamBtn);
+//        };
+//        connect(newCamBtn , &QPushButton::clicked , cameraClicked);
+//        buttonList.append(newCamBtn);
+//        //relayout
+////        for(int i = 0 ; i < buttonList.length() - 1 ; i ++)
+////            ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->removeWidget(buttonList.at(i));
+//        for(int i = 0 ; i < buttonList.length() ; i ++)
+//            ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->addWidget(buttonList.at(i) , i / 5 , i % 5);
     }
 }
 void MainWindow::loadCameraBtnList()
 {
 
 }
+void MainWindow::onCameraAdded()
+{
+    //create a button
+    CameraBtn *newCamBtn = new CameraBtn(ui->cameraBtnWrapper , App()->getCameraManager()->getCam(App()->getCameraManager()->getCamCount() - 1));
+    auto cameraClicked = [this, newCamBtn]{
+        this->cameraBtnClicked(newCamBtn);
+    };
+    connect(newCamBtn , &QPushButton::clicked , cameraClicked);
+    buttonList.append(newCamBtn);
+    //relayout
+//        for(int i = 0 ; i < buttonList.length() - 1 ; i ++)
+//            ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->removeWidget(buttonList.at(i));
+    for(int i = 0 ; i < buttonList.length() ; i ++)
+        ((QGridLayout*)(ui->cameraBtnWrapper->layout()))->addWidget(buttonList.at(i) , i / 5 , i % 5);
+}
 void MainWindow::editCameraIp()
 {
-//    CameraSetupDlg camSetupDlg();
-    //TODO
     SonyCam *curCam = App()->getCameraManager()->getCurCam();
     if(curCam == nullptr)
         return;
@@ -97,6 +110,10 @@ void MainWindow::removeCamera()
     int index = App()->getCameraManager()->getCamIndex(App()->getCameraManager()->getCurCam());
     //remove camera
     App()->getCameraManager()->removeCamera(cam);
+
+    //remove from file
+    App()->getAppSettings()->removeCamera(cam);
+
     //change cur cam
     App()->getCameraManager()->setCurCam(nullptr);
 
@@ -131,7 +148,8 @@ void MainWindow::saveAsFile()
 {
     QString logs = ui->txRxList->toPlainText();
     QDateTime current = QDateTime::currentDateTime();
-    QFile *file = new QFile(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + current.toString("yy-MM-dd hh-mm-ss") + ".log");
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + current.toString("yy-MM-dd hh-mm-ss") + ".log";
+    QFile *file = new QFile(filePath);
     if(file->open(QFile::Append))
     {
         file->write(logs.toUtf8());
@@ -139,14 +157,9 @@ void MainWindow::saveAsFile()
         file->close();
     }
     file->deleteLater();
+    App()->showMessage("Saved to " + filePath);
 }
 
-void MainWindow::removePreset()
-{
-    //remove from class instance
-    //remove from the list
-    //remove from the file
-}
 void MainWindow::addPreset()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
@@ -212,6 +225,9 @@ void MainWindow::cameraBtnClicked(CameraBtn* btn)
         buttonList.at(i)->changeBackgroundAsDefault();
     btn->changeBackgroundAsPressed();
     App()->getCameraManager()->setCurCam(buttonList.indexOf(btn));
+    ui->waitTimeDial->setValue(App()->getCameraManager()->getCurCam()->getWaitTime());
+    ui->moveSpeedDial->setValue(App()->getCameraManager()->getCurCam()->getCallPresetSpeed());
+
 
 }
 void MainWindow::curCamChanged()
@@ -231,11 +247,15 @@ void MainWindow::curCamChanged()
             showCameraStatus(1);
         }
         //fill presets list
-        //TODO
+        for(int i = 0 ; i < curCam->getPresetList().length() ; i ++)
+        {
+
+            addPresetWidget(i);
+        }
         //change the waittime
-        //TODO
+        ui->waitTimeDial->setValue(curCam->getWaitTime());
         //change the speed
-        //TODO
+        ui->moveSpeedDial->setValue(curCam->getCallPresetSpeed());
     }
     else
     {

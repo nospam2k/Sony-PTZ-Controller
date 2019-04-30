@@ -5,8 +5,6 @@ CameraBtn::CameraBtn(QWidget *parent, SonyCam *cam):QPushButton(parent)
     this->setText(cam->getCameraName());
     this->cam = cam;
     connect(cam, SIGNAL(cameraNameChanged()) , this , SLOT(cameraNameChanged()));
-
-
 }
 void CameraBtn::cameraNameChanged()
 {

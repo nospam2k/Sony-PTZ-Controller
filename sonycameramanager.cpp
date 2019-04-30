@@ -1,8 +1,10 @@
 #include "sonycameramanager.h"
+#include "sonyptzapp.h"
 #include <QDebug>
 SonyCameraManager::SonyCameraManager(QObject *parent) : QObject(parent)
 {
     initUdpSocket();
+    loadCameras();
     curCam = nullptr;
 }
 SonyCameraManager::~SonyCameraManager()
@@ -11,8 +13,6 @@ SonyCameraManager::~SonyCameraManager()
     {
         SonyCam *temp = cameraList.at(0);
         cameraList.removeAt(0);
-        //stop everything doing with this cam
-        //TODO
         delete temp;
     }
 
@@ -25,6 +25,13 @@ void SonyCameraManager::initUdpSocket()
     receiver = new QUdpSocket();
     receiver->bind(DEFAULT_RECEIVE_PORTNUM);
     connect(receiver , SIGNAL(readyRead()) , this , SLOT(readyToRead()));
+}
+void SonyCameraManager::loadCameras()
+{
+    for(int i = 0 ; i < App()->getAppSettings()->getCameraCount() ; i ++)
+    {
+        addCamera(App()->getAppSettings()->getCamera(i));
+    }
 }
 void SonyCameraManager::addCamera(SonyCam *cam)
 {
@@ -46,17 +53,13 @@ void SonyCameraManager::addCamera(SonyCam *cam)
             emit this->curCamIpChanged();
     });
     connect(cam , SIGNAL(messageSent(int,QString,int,SonyCam*)) , this , SLOT(onMessageSent(int,QString,int,SonyCam*)));
-    //add in the file
-    //TODO
-
+    emit cameraAdded();
 }
 void SonyCameraManager::removeCamera(SonyCam *cam)
 {
     if(cameraList.contains(cam))
     {
         cameraList.removeOne(cam);
-        //remove from the file
-        //TODO
         delete cam;
     }
 }
@@ -118,10 +121,22 @@ void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
     int type = (static_cast<unsigned int>(temp.at(0))) * 0x0100 + (static_cast<unsigned int>(temp.at(1)));
 
     QString bytes = temp.mid(8).toHex();
-    if(getCam(datagram.senderAddress()) != nullptr && (bytes == "9051ff" || bytes == "9052ff"))
-        getCam(datagram.senderAddress())->onReceiveReply();
+
     int commandNum = (static_cast<unsigned int>(temp.at(6))) * 0x0100 + (static_cast<unsigned int>(temp.at(7)));
 
+
+    if(getCam(datagram.senderAddress()) != nullptr)
+    {
+        switch(type)
+        {
+        case REPLY_HEAD:
+            if(bytes == "9051ff" || bytes == "9052ff")
+                getCam(datagram.senderAddress())->onReceiveReply();
+            break;
+        case CONTROL_COMMAND_REPLY_HEAD:
+            getCam(datagram.senderAddress())->onReceiveReply();
+        }
+    }
     if(datagram.senderAddress().isEqual(QHostAddress(curCam->getCameraIp()) , QHostAddress::ConvertV4MappedToIPv4))
         buildReportData(type , bytes , commandNum);
 

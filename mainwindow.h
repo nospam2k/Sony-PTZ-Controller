@@ -38,7 +38,6 @@ private slots:
     void clearRxTxList();
     void saveAsFile();
 
-    void removePreset();
     void addPreset();
 
     void startLooping();
@@ -55,6 +54,8 @@ private slots:
     void curCamDisconnected();
 
     void onReportReady(QString report);
+
+    void onCameraAdded();
 
 
 

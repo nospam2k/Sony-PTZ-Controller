@@ -1,5 +1,5 @@
 #include "sonycam.h"
-
+#include "sonyptzapp.h"
 SonyCam::SonyCam(QString ip, unsigned int portNum , QString cameraName)
 {
     isConnected = false;
@@ -9,8 +9,6 @@ SonyCam::SonyCam(QString ip, unsigned int portNum , QString cameraName)
     this->cameraName = cameraName;
     initUdpConnector();
     initTimer();
-    //load presets list
-    loadPresets();
 }
 SonyCam::~SonyCam()
 {
@@ -55,14 +53,18 @@ void SonyCam::onTimerOneSec()
     if(isWaitingReply)
         return;
     counter ++;
-    curPresetIndex ++;
+
     if(counter >= waiteTime)
     {
+
         counter = 0;
         //call next preset
         if((curPresetIndex) < presetLoop.length())
         {
             callPreset(presetLoop.at(curPresetIndex).presetNum);
+            curPresetIndex ++;
+            if(curPresetIndex >= presetLoop.length())
+                curPresetIndex = 0;
         }
         else
         {
@@ -163,11 +165,6 @@ void SonyCam::callPreset(unsigned int presetNum)
     addInTheQue(7);
 
 }
-void SonyCam::loadPresets()
-{
-    //load presets from the ini file
-    //TODO
-}
 void SonyCam::addPreset(PRESET preset)
 {
     presetLoop.append(preset);
@@ -179,7 +176,6 @@ void SonyCam::removePreset(int presetIndex)
 void SonyCam::replacePreset(PRESET preset, int presetIndex)
 {
     presetLoop.replace(presetIndex , preset);
-
 }
 QList<PRESET> SonyCam::getPresetList()
 {
@@ -189,17 +185,24 @@ void SonyCam::startLooping()
 {
     //start timer
     timer->start(1000);//start looping every 1 sec
-    counter = 0;
-    curPresetIndex = 0;
+
     //call first preset
     if(presetLoop.length() > 0)
         callPreset(presetLoop.at(0).presetNum);
+    counter = 0;
+    curPresetIndex = 1;
 }
 void SonyCam::stopLooping()
 {
     //stop timer
     timer->stop();
-    //send message
+    //delete all message
+    for(int i = 0 ; i < commandQue.length() ; i ++)
+    {
+        COMMAND *temp = commandQue.at(0);
+        commandQue.removeAt(0);
+        delete temp;
+    }
 //    stopMoving();
 //    stopZooming();
 //    stopFocusing();
@@ -215,6 +218,14 @@ void SonyCam::setCallPresetSpeed(unsigned int speed)
 void SonyCam::setWaitTime(unsigned int seconds)
 {
     this->waiteTime = seconds;
+}
+unsigned int SonyCam::getCallPresetSpeed()
+{
+    return this->callPresetSpeed;
+}
+unsigned int SonyCam::getWaitTime()
+{
+    return this->waiteTime;
 }
 void SonyCam::moveOneLeft(unsigned int panSpeed)
 {

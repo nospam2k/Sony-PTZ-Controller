@@ -22,6 +22,7 @@ public:
     void setCurCam(SonyCam* cam);
     int getCamIndex(SonyCam *cam);
     SonyCam* getCam(QHostAddress ipAddr);
+    void loadCameras();
 private:
     QList<SonyCam *> cameraList;
     QUdpSocket *receiver;
@@ -30,6 +31,8 @@ private:
     void processReceivedData(QNetworkDatagram datagram);
 
     void buildReportData(int type , QString bytes , int comIndex);
+
+
 signals:
     void dataReceived(QString command, int commandNum);
     void curCamChanged();
@@ -39,6 +42,7 @@ signals:
     void curCamConnected();
     void curCamDisconnected();
     void reportData(QString data);
+    void cameraAdded();
 
 private slots:
     void readyToRead();

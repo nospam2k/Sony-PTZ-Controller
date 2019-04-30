@@ -27,9 +27,6 @@ public:
 
     bool isConnected;
 
-    bool isWaitingReply;
-
-
     void connectToCamera();
     void disconnectFromCamera();
 
@@ -64,6 +61,8 @@ public:
 
     void setCallPresetSpeed(unsigned int speed);
     void setWaitTime(unsigned int seconds);
+    unsigned int getCallPresetSpeed();
+    unsigned int getWaitTime();
 
     QString getErrorMessage();
     void addPreset(PRESET preset);
@@ -77,22 +76,21 @@ public:
 
 private:
 
-    QString cameraIp;
-    unsigned int portNum;
-    QString cameraName;
+    bool isWaitingReply;
+
+    QString cameraIp;//tosave
+    unsigned int portNum;//tosave
+    QString cameraName;//tosave
     QUdpSocket *connector;
     unsigned int commandIndex;//used to build command header
     char toSendPacket[24];//to send packet max 24 byte
 
-    QList<PRESET> presetLoop;
-    int callPresetSpeed = 1;//1 ~ 18
-    int waiteTime = 10;//unit is second
+    QList<PRESET> presetLoop;//tosave
+    int callPresetSpeed = 1;//1 ~ 18//tosave
+    int waiteTime = 10;//unit is second//tosave
     QTimer* timer;
     int counter;
     int curPresetIndex;
-
-    void loadPresets();
-
 
     void initUdpConnector();
     void initTimer();

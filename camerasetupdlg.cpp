@@ -30,9 +30,15 @@ void CameraSetupDlg::saveCamera()
 {
     if(camToEdit)
     {
+        //remove current data from file
+        App()->getAppSettings()->removeCamera(camToEdit);
+
         //edit
         camToEdit->setCameraIp(ui->ipEdit->text());
         camToEdit->setCameraName(ui->nameEdit->text());
+
+        //save to file
+        App()->getAppSettings()->saveCamera(camToEdit);
     }
     else
     {
@@ -40,6 +46,9 @@ void CameraSetupDlg::saveCamera()
         camToEdit = new SonyCam(ui->ipEdit->text() , DEFAULT_TARGET_PORTNUM , ui->nameEdit->text());
         //add
         App()->getCameraManager()->addCamera(camToEdit);
+
+        //save to file
+        App()->getAppSettings()->saveCamera(camToEdit);
     }
     accept();
 }

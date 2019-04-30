@@ -364,13 +364,6 @@ background : #333333;
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <widget class="QPushButton" name="removePresetBtn">
-              <property name="text">
-               <string>Remove Preset</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="addPresetBtn">
               <property name="text">
                <string>Add Preset</string>

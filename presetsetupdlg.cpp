@@ -70,131 +70,111 @@ void PresetSetupDlg::initUi()
 void PresetSetupDlg::moveUp()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->moveOneUp(ui->tiltSpeedCombo->currentIndex() + 1);
 
 }
 void PresetSetupDlg::moveDown()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->moveOneDown(ui->tiltSpeedCombo->currentIndex() + 1);
 }
 void PresetSetupDlg::moveLeft()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->moveOneLeft(ui->panSpeedCombo->currentIndex() + 1);
 }
 void PresetSetupDlg::moveRight()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->moveOneRight(ui->panSpeedCombo->currentIndex() + 1);
 }
 void PresetSetupDlg::moveHome()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->moveHome();
 }
 void PresetSetupDlg::stopMoving()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->stopMoving();
 }
 void PresetSetupDlg::zoomInOnce()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->zoomOneIn(ui->zoomSpeedCombo->currentIndex());
 }
 void PresetSetupDlg::zoomOutOnce()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->zoomOneOut(ui->zoomSpeedCombo->currentIndex());
 }
 void PresetSetupDlg::stopZooming()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->stopZooming();
 }
 void PresetSetupDlg::focusInOnce()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->focusOneIn(ui->focusSpeedCombo->currentIndex());
 }
 void PresetSetupDlg::focusOutOnce()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->focusOneOut(ui->focusSpeedCombo->currentIndex());
 }
 void PresetSetupDlg::stopFocusing()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->stopFocusing();
 }
 void PresetSetupDlg::changeFocusMode()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->setFocusMode(ui->autoFocusRadio->isChecked());
 }
 void PresetSetupDlg::setPreset()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
-    //should save preset name in file
-    //TODO
+    //should save preset name in file if there is name
+    if(ui->presetNameEdit->text().length() != 0)
+        App()->getAppSettings()->setPresetName(cam->getCameraIp() , ui->presetCombo1->currentIndex() , ui->presetNameEdit->text());
     cam->setPreset(ui->presetCombo1->currentIndex());
 }
 void PresetSetupDlg::callPreset()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    if(cam == nullptr)
-        return;
     cam->callPreset(ui->presetCombo2->currentIndex());
 }
 void PresetSetupDlg::savePresetSetup()
 {
+    SonyCam *cam = App()->getCameraManager()->getCurCam();
     //store presets in curcam
     if(presetIndex == -1)//create
     {
         PRESET preset;
         preset.presetNum = ui->presetCombo->currentIndex();
         //should change to preset name from file
-        //TODO
-        preset.presetName = QString("Preset " + QString::number(preset.presetNum)).left(10);
-        App()->getCameraManager()->getCurCam()->addPreset(preset);
+
+        App()->getAppSettings()->addNewPreset(cam->getCameraIp() , preset.presetNum);
+        preset.presetName = App()->getAppSettings()->getPresetName(cam->getCameraIp() , preset.presetNum);
+
+        //add new preset
+        cam->addPreset(preset);
+        //set the preset call speed
+        cam->setPresetSpeed(preset.presetNum , App()->getCameraManager()->getCurCam()->getCallPresetSpeed());
     }
     else//edit
     {
         PRESET preset;
         preset.presetNum = ui->presetCombo->currentIndex();
         //should change to preset name from file
-        //TODO
-        preset.presetName = QString("Preset " + QString::number(preset.presetNum)).left(10);
-        App()->getCameraManager()->getCurCam()->replacePreset(preset , presetIndex);
+        App()->getAppSettings()->editPreset(cam->getCameraIp() , presetIndex , preset.presetNum);
+        preset.presetName = App()->getAppSettings()->getPresetName(cam->getCameraIp() , preset.presetNum);
+        //change preset info
+        cam->replacePreset(preset , presetIndex);
+        //set the preset call speed
+        cam->setPresetSpeed(preset.presetNum , App()->getCameraManager()->getCurCam()->getCallPresetSpeed());
     }
     accept();
 }

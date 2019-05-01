@@ -72,6 +72,9 @@ public:
 
     QList<COMMAND *> commandQue;
     void onReceiveReply();
+    void onReceiveACK();
+
+    bool isLooping();
 
 
 private:
@@ -117,6 +120,8 @@ signals:
 
     void messageSent(int type , QString bytes , int comIndex , SonyCam* cam);
 
+    void loopingStarted(SonyCam *cam);
+    void loopingStopped(SonyCam *cam);
 };
 
 #endif // SONYCAM_H

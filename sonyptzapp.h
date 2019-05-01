@@ -21,6 +21,7 @@ public:
     SonyCameraManager *getCameraManager();
     MainWindow *getMainWindow();
     void showMessage(QString msg);
+    void quitApp();
 
 private:
     AppSettings *settings;
@@ -34,7 +35,6 @@ private:
     QAction *actionExit;
     QMenu *trayMenu;
 
-    void quitApp();
     void showUi();
     void hideUi();
 private slots:

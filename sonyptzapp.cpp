@@ -3,20 +3,17 @@
 SonyPTZApp::SonyPTZApp(int argc, char *argv[]):QApplication(argc, argv)
 {
     //create writable location
+    //needed for saving logs...
     if(!QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).exists())
     {
         QDir().mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-    }
-    if(!QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/config").exists())
-    {
-        QDir().mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/config");
     }
     settings = new AppSettings();
     //load cameras
     cameraManager = new SonyCameraManager(this);
     mainWin = new MainWindow;
-    showUi();
     cameraManager->loadCameras();
+    showUi();
     sysTrayInit();
 
 }

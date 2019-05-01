@@ -30,6 +30,8 @@ private:
 
     void addPresetWidget(int presetIndex);
     ListItem* getListItem(int presetIndex);
+
+    void showLoopingStatus(bool looping);
 private slots:
     void addCamera();
     void editCameraIp();
@@ -47,16 +49,19 @@ private slots:
     void speedChanged(int curSpeed);
 
     void curCamChanged();
-    void curCamPresetsChanged();
     void curCamIpChanged();
     void curCamError();
     void curCamConnected();
     void curCamDisconnected();
+    void onCurCamLoopingStarted();
+    void onCurCamLoopingStopped();
 
     void onReportReady(QString report);
 
     void onCameraAdded();
 
+    void onWaitTimeEdited();
+    void onMoveSpeedEdited();
 
 
 

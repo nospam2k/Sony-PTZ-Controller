@@ -20,8 +20,8 @@ public:
     SonyCam* getCamera(int index);
     void setPresetName(QString ip, int presetNum, QString presetName);
     void addNewPreset(QString ip , int presetNum);
-    void editPreset(QString ip, int presetIndex, int presetNum);
     QString getPresetName(QString ip, int presetNum);
+    void savePresets(SonyCam *cam);
 
     void setCallPresetSpeed(SonyCam* cam);
     void setWaitTime(SonyCam* cam);

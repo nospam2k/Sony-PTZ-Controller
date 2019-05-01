@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>572</width>
-    <height>501</height>
+    <width>590</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Five Eyes</string>
+   <string>Punch Drunk - Five Eyes PTZ Automation</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -356,7 +356,7 @@ background : #333333;
             <property name="minimumSize">
              <size>
               <width>270</width>
-              <height>250</height>
+              <height>200</height>
              </size>
             </property>
            </widget>
@@ -424,6 +424,29 @@ background : #333333;
                 </item>
                </layout>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_12">
+                <item>
+                 <widget class="QLineEdit" name="waitTimeEdit"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="waitTimeOKBtn">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>OK</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </item>
             <item>
@@ -470,6 +493,29 @@ background : #333333;
                 </item>
                </layout>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_13">
+                <item>
+                 <widget class="QLineEdit" name="movementSpeedEdit"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="movementSpeedOKBtn">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>OK</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </item>
            </layout>
@@ -487,6 +533,10 @@ background : #333333;
              <widget class="QPushButton" name="startLoopingBtn">
               <property name="text">
                <string>Play</string>
+              </property>
+              <property name="icon">
+               <iconset resource="sonyptz.qrc">
+                <normaloff>:/assets/toggle-mid.png</normaloff>:/assets/toggle-mid.png</iconset>
               </property>
              </widget>
             </item>

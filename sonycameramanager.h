@@ -37,17 +37,19 @@ signals:
     void dataReceived(QString command, int commandNum);
     void curCamChanged();
     void curCamIpChanged();
-    void curCamPresetsChanged();
     void curCamError();
     void curCamConnected();
     void curCamDisconnected();
+    void curCamLoopingStarted();
+    void curCamLoopingStopped();
     void reportData(QString data);
     void cameraAdded();
 
 private slots:
     void readyToRead();
     void onMessageSent(int type , QString bytes , int comIndex , SonyCam* cam);
-
+    void onLoopingStarted(SonyCam *cam);
+    void onLoopingStopped(SonyCam *cam);
 
 public slots:
 };

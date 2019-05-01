@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>680</width>
-    <height>237</height>
+    <width>784</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -130,14 +130,14 @@ QRadioButton::indicator{
  	 border-width: 2px;
 	 border-color: #1f1f1f;
 	background : white;
-	border-radius : 6px;
+	border-radius : 9px;
 }
 QRadioButton::indicator:checked{
 	 border-style: outset;
  	 border-width: 2px;
 	 border-color: white;
 	background : #1f1f1f;
-	border-radius : 6px;
+	border-radius : 9px;
 }
 QCheckBox::indicator{
 	 border-style: outset;
@@ -155,7 +155,7 @@ QHeaderView::section{
 	border-style : outset;
 	border-width : 1px;
 	border-color : #c9c9c9;
-}</string>
+}sss</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -726,6 +726,13 @@ QPushButton:pressed{
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Preset Number</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QComboBox" name="presetCombo"/>

@@ -22,7 +22,10 @@ SonyCameraManager::~SonyCameraManager()
 void SonyCameraManager::initUdpSocket()
 {
     receiver = new QUdpSocket();
-    receiver->bind(DEFAULT_RECEIVE_PORTNUM);
+    if(!receiver->bind(DEFAULT_RECEIVE_PORTNUM))
+    {
+        App()->showMessage("Can not open port. Maybe the same application is running already.");
+    }
     connect(receiver , SIGNAL(readyRead()) , this , SLOT(readyToRead()));
 }
 void SonyCameraManager::loadCameras()
@@ -52,6 +55,8 @@ void SonyCameraManager::addCamera(SonyCam *cam)
             emit this->curCamIpChanged();
     });
     connect(cam , SIGNAL(messageSent(int,QString,int,SonyCam*)) , this , SLOT(onMessageSent(int,QString,int,SonyCam*)));
+    connect(cam , SIGNAL(loopingStarted(SonyCam*)) , this , SLOT(onLoopingStarted(SonyCam*)));
+    connect(cam , SIGNAL(loopingStopped(SonyCam*)) , this , SLOT(onLoopingStopped(SonyCam*)));
     emit cameraAdded();
 }
 void SonyCameraManager::removeCamera(SonyCam *cam)
@@ -129,8 +134,13 @@ void SonyCameraManager::processReceivedData(QNetworkDatagram datagram)
         switch(type)
         {
         case REPLY_HEAD:
+            if(bytes == "9041ff" || bytes == "9042ff")
+                getCam(datagram.senderAddress())->onReceiveACK();
             if(bytes == "9051ff" || bytes == "9052ff")
                 getCam(datagram.senderAddress())->onReceiveReply();
+            if(bytes == "906002ff" || bytes == "906003ff" || bytes == "906141ff" || bytes == "906241ff")//syntax, command bufferfull, command not executable
+                getCam(datagram.senderAddress())->onReceiveReply();
+
             break;
         case CONTROL_COMMAND_REPLY_HEAD:
             getCam(datagram.senderAddress())->onReceiveReply();
@@ -177,4 +187,16 @@ SonyCam* SonyCameraManager::getCam(QHostAddress ipAddr)
             return cameraList.at(i);
     }
     return nullptr;
+}
+void SonyCameraManager::onLoopingStarted(SonyCam *cam)
+{
+    qDebug()<<cam;
+    qDebug()<<curCam;
+    if(cam == curCam)
+        emit curCamLoopingStarted();
+}
+void SonyCameraManager::onLoopingStopped(SonyCam *cam)
+{
+    if(cam == curCam)
+        emit curCamLoopingStopped();
 }

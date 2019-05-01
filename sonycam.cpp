@@ -53,6 +53,7 @@ void SonyCam::onTimerOneSec()
     if(isWaitingReply)
         return;
     counter ++;
+    qDebug()<<counter;
 
     if(counter >= waiteTime)
     {
@@ -79,6 +80,10 @@ void SonyCam::onReceiveReply()
     isWaitingReply = false;
     if(commandQue.length() > 0)
         sendPacket();
+}
+void SonyCam::onReceiveACK()
+{
+
 }
 void SonyCam::connectToCamera()
 {
@@ -130,8 +135,8 @@ void SonyCam::setPresetSpeed(unsigned int presetNum , unsigned int speed)
     toSendPacket[10] = 0x7e;
     toSendPacket[11] = 0x01;
     toSendPacket[12] = 0x0b;
-    toSendPacket[13] = (char)(presetNum % 64);//max preset number 64
-    toSendPacket[14] = (char)(speed % 18 + 1);//max speed 18
+    toSendPacket[13] = (char)(presetNum % 255);//max preset number 64
+    toSendPacket[14] = (char)(speed % 255);//max speed 18
     toSendPacket[15] = 0xff;
     addInTheQue(8);
 
@@ -181,8 +186,14 @@ QList<PRESET> SonyCam::getPresetList()
 {
     return this->presetLoop;
 }
+bool SonyCam::isLooping()
+{
+    return timer->isActive();
+}
 void SonyCam::startLooping()
 {
+    if(timer->isActive())
+        return;
     //start timer
     timer->start(1000);//start looping every 1 sec
 
@@ -191,6 +202,7 @@ void SonyCam::startLooping()
         callPreset(presetLoop.at(0).presetNum);
     counter = 0;
     curPresetIndex = 1;
+    emit loopingStarted(this);
 }
 void SonyCam::stopLooping()
 {
@@ -203,9 +215,7 @@ void SonyCam::stopLooping()
         commandQue.removeAt(0);
         delete temp;
     }
-//    stopMoving();
-//    stopZooming();
-//    stopFocusing();
+    emit loopingStopped(this);
 }
 void SonyCam::setCallPresetSpeed(unsigned int speed)
 {
@@ -235,7 +245,7 @@ void SonyCam::moveOneLeft(unsigned int panSpeed)
     toSendPacket[9] = 0x01;
     toSendPacket[10] = 0x06;
     toSendPacket[11] = 0x01;
-    toSendPacket[12] = (char)(panSpeed % 18 + 1);//max pan speed 18
+    toSendPacket[12] = (char)(panSpeed % 255);//max pan speed 18
     toSendPacket[13] = 5;//default tilt speed
     toSendPacket[14] = 0x01;
     toSendPacket[15] = 0x03;
@@ -251,7 +261,7 @@ void SonyCam::moveOneRight(unsigned int panSpeed)
     toSendPacket[9] = 0x01;
     toSendPacket[10] = 0x06;
     toSendPacket[11] = 0x01;
-    toSendPacket[12] = (char)(panSpeed % 18 + 1);//max pan speed 18
+    toSendPacket[12] = (char)(panSpeed % 255);//max pan speed 18
     toSendPacket[13] = 5;//default tilt speed
     toSendPacket[14] = 0x02;
     toSendPacket[15] = 0x03;
@@ -268,7 +278,7 @@ void SonyCam::moveOneUp(unsigned int tiltSpeed)
     toSendPacket[10] = 0x06;
     toSendPacket[11] = 0x01;
     toSendPacket[12] = 5;//default pan speed
-    toSendPacket[13] = (char)(tiltSpeed % 18 + 1);//max tilt speed 18
+    toSendPacket[13] = (char)(tiltSpeed % 255);//max tilt speed 18
     toSendPacket[14] = 0x03;
     toSendPacket[15] = 0x01;
     toSendPacket[16] = 0xff;
@@ -284,7 +294,7 @@ void SonyCam::moveOneDown(unsigned int tiltSpeed)
     toSendPacket[10] = 0x06;
     toSendPacket[11] = 0x01;
     toSendPacket[12] = 5;//default pan speed
-    toSendPacket[13] = (char)(tiltSpeed % 18 + 1);//max tilt speed 18
+    toSendPacket[13] = (char)(tiltSpeed % 255);//max tilt speed 18
     toSendPacket[14] = 0x03;
     toSendPacket[15] = 0x02;
     toSendPacket[16] = 0xff;
@@ -466,6 +476,8 @@ void SonyCam::sendPacket()
 }
 void SonyCam::addInTheQue(unsigned int len)
 {
+    if(!isConnected)
+        return;
     COMMAND *command = new COMMAND;
     memcpy(command->commandByte , toSendPacket , len + 8);
     command->commandLength = len + 8;

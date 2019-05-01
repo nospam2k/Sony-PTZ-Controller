@@ -26,15 +26,7 @@ void AppSettings::saveCamera(SonyCam *cam)
     cameraList->setValue(cam->getCameraIp() + "_waittime" , cam->getWaitTime());
 
     //remove presets
-    presetList->remove(cam->getCameraIp() + "_presets");
-    presetList->beginWriteArray(cam->getCameraIp() + "_presets");
-    for(int i = 0 ; i < cam->getPresetList().length() ; i ++)
-    {
-        presetList->setArrayIndex(i);
-        presetList->setValue("preset_num" , cam->getPresetList().at(i).presetNum);
-//        presetList->setValue("preset_name" , cam->getPresetList().at(i).presetName);
-    }
-    presetList->endArray();
+    savePresets(cam);
 }
 void AppSettings::removeCamera(SonyCam *cam)
 {
@@ -101,7 +93,7 @@ void AppSettings::setPresetName(QString ip, int presetNum, QString presetName)
 }
 QString AppSettings::getPresetName(QString ip, int presetNum)
 {
-    return presetNameList->value(ip + "_" + QString::number(presetNum) , "PRESET " + QString::number(presetNum)).toString();
+    return presetNameList->value(ip + "_" + QString::number(presetNum) , "PRESET " + QString::number(presetNum + 1)).toString();
 }
 void AppSettings::addNewPreset(QString ip, int presetNum)
 {
@@ -112,10 +104,16 @@ void AppSettings::addNewPreset(QString ip, int presetNum)
     presetList->setValue("preset_num" , presetNum);
     presetList->endArray();
 }
-void AppSettings::editPreset(QString ip, int presetIndex, int presetNum)
+void AppSettings::savePresets(SonyCam *cam)
 {
-    presetList->beginWriteArray(ip + "_presets");
-    presetList->setArrayIndex(presetIndex);
-    presetList->setValue("preset_num" , presetNum);
+    if(cam == nullptr)
+        return;
+    presetList->remove(cam->getCameraIp() + "_presets");
+    presetList->beginWriteArray(cam->getCameraIp() + "_presets");
+    for(int i = 0 ; i < cam->getPresetList().length() ; i ++)
+    {
+        presetList->setArrayIndex(i);
+        presetList->setValue("preset_num" , cam->getPresetList().at(i).presetNum);
+    }
     presetList->endArray();
 }

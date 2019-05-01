@@ -37,6 +37,8 @@ void ListItem::onDelBtnClicked()
     ((QListWidget*)parent)->takeItem(presetIndex);
     //remove from curcam
     cam->removePreset(presetIndex);
+    //remove from the file
+    App()->getAppSettings()->savePresets(cam);
 
     //reindexing
     for(int i = presetIndex; i < cam->getPresetList().length() ; i ++)
@@ -45,8 +47,7 @@ void ListItem::onDelBtnClicked()
     }
 
 
-    //remove from the file
-    //TODO
+
 }
 void ListItem::setPresetIndex(int presetIndex)
 {

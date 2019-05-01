@@ -49,9 +49,9 @@ void PresetSetupDlg::initUi()
 
     for(int i = 0 ; i < 64 ; i ++)
     {
-        ui->presetCombo->addItem(QString::number(i));
-        ui->presetCombo1->addItem(QString::number(i));
-        ui->presetCombo2->addItem(QString::number(i));
+        ui->presetCombo->addItem(QString::number(i + 1));
+        ui->presetCombo1->addItem(QString::number(i + 1));
+        ui->presetCombo2->addItem(QString::number(i + 1));
     }
     for(int i = 0 ; i < 18 ; i ++)
     {
@@ -60,8 +60,8 @@ void PresetSetupDlg::initUi()
     }
     for(int i = 0 ; i < 8 ; i ++)
     {
-        ui->zoomSpeedCombo->addItem(QString::number(i));
-        ui->focusSpeedCombo->addItem(QString::number(i));
+        ui->zoomSpeedCombo->addItem(QString::number(i + 1));
+        ui->focusSpeedCombo->addItem(QString::number(i + 1));
     }
 
     if(presetIndex != -1)
@@ -168,11 +168,11 @@ void PresetSetupDlg::savePresetSetup()
     {
         PRESET preset;
         preset.presetNum = ui->presetCombo->currentIndex();
-        //should change to preset name from file
-        App()->getAppSettings()->editPreset(cam->getCameraIp() , presetIndex , preset.presetNum);
         preset.presetName = App()->getAppSettings()->getPresetName(cam->getCameraIp() , preset.presetNum);
         //change preset info
         cam->replacePreset(preset , presetIndex);
+        //should change to preset name from file
+        App()->getAppSettings()->savePresets(cam);
         //set the preset call speed
         cam->setPresetSpeed(preset.presetNum , App()->getCameraManager()->getCurCam()->getCallPresetSpeed());
     }

@@ -42,6 +42,7 @@ signals:
     void curCamDisconnected();
     void curCamLoopingStarted();
     void curCamLoopingStopped();
+    void curCamLooping();
     void reportData(QString data);
     void cameraAdded();
 
@@ -50,6 +51,7 @@ private slots:
     void onMessageSent(int type , QString bytes , int comIndex , SonyCam* cam);
     void onLoopingStarted(SonyCam *cam);
     void onLoopingStopped(SonyCam *cam);
+    void onLooping(SonyCam *cam);
 
 public slots:
 };

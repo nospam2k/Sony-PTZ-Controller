@@ -41,8 +41,8 @@ void MainWindow::initUi()
     connect(ui->stopLoopingBtn , SIGNAL(clicked(bool)) , this , SLOT(stopLooping()));
     connect(ui->waitTimeDial , SIGNAL(valueChanged(int)) , this , SLOT(waitTimeChanged(int)));
     connect(ui->moveSpeedDial , SIGNAL(valueChanged(int)) , this , SLOT(speedChanged(int)));
-    connect(ui->movementSpeedOKBtn , SIGNAL(clicked(bool)) , this , SLOT(onMoveSpeedEdited()));
-    connect(ui->waitTimeOKBtn , SIGNAL(clicked(bool)) , this , SLOT(onWaitTimeEdited()));
+    connect(ui->movementSpeedEdit , SIGNAL(returnPressed()) , this , SLOT(onMoveSpeedEdited()));
+    connect(ui->waitTimeEdit , SIGNAL(returnPressed()) , this , SLOT(onWaitTimeEdited()));
 
     connect(App()->getCameraManager() , SIGNAL(curCamChanged()) , this , SLOT(curCamChanged()));
 
@@ -54,7 +54,7 @@ void MainWindow::initUi()
     connect(App()->getCameraManager() , SIGNAL(cameraAdded()) , this , SLOT(onCameraAdded()));
     connect(App()->getCameraManager() , SIGNAL(curCamLoopingStarted()) , this , SLOT(onCurCamLoopingStarted()));
     connect(App()->getCameraManager() , SIGNAL(curCamLoopingStopped()) , this , SLOT(onCurCamLoopingStopped()));
-
+    connect(App()->getCameraManager() , SIGNAL(curCamLooping()) , this , SLOT(onCurCamLooping()));
     ui->waitTimeLcd->display(ui->waitTimeDial->value());
     ui->moveSpeedLcd->display(ui->moveSpeedDial->value());
     ui->waitTimeEdit->setText(QString::number(ui->waitTimeDial->value()));
@@ -186,11 +186,17 @@ ListItem* MainWindow::getListItem(int presetIndex)
 }
 void MainWindow::startLooping()
 {
-    App()->getCameraManager()->getCurCam()->startLooping();
+    SonyCam *cam = App()->getCameraManager()->getCurCam();
+    if(cam == nullptr || !cam->isConnected)
+        return;
+    cam->startLooping();
 }
 void MainWindow::stopLooping()
 {
-    App()->getCameraManager()->getCurCam()->stopLooping();
+    SonyCam *cam = App()->getCameraManager()->getCurCam();
+    if(cam == nullptr || !cam->isConnected)
+        return;
+    cam->stopLooping();
 }
 
 void MainWindow::waitTimeChanged(int curWaitTime)
@@ -220,8 +226,8 @@ void MainWindow::onWaitTimeEdited()
     qDebug()<<waitTime;
     if(waitTime < 1)
         waitTime = 1;
-    if(waitTime > 99)
-        waitTime = 99;
+    if(waitTime > 999)
+        waitTime = 999;
     waitTimeChanged(waitTime);
 
 }
@@ -273,7 +279,7 @@ void MainWindow::curCamChanged()
         ui->waitTimeDial->setValue(curCam->getWaitTime());
         //change the speed
         ui->moveSpeedDial->setValue(curCam->getCallPresetSpeed());
-        showLoopingStatus(curCam->isLooping());
+        showLoopingStatus(curCam->isLooping()?0:2);
     }
     else
     {
@@ -283,7 +289,7 @@ void MainWindow::curCamChanged()
         ui->presetList->clear();
         ui->waitTimeDial->setValue(1);
         ui->moveSpeedDial->setValue(1);
-        showLoopingStatus(false);
+        showLoopingStatus(2);
     }
 }
 void MainWindow::onReportReady(QString report)
@@ -325,18 +331,35 @@ void MainWindow::curCamIpChanged()
 {
     ui->ipLcd->display(App()->getCameraManager()->getCurCam()->getCameraIp());
 }
+bool isGreen = true;
 void MainWindow::onCurCamLoopingStarted()
 {
-    showLoopingStatus(true);
+    showLoopingStatus(0);
+    isGreen = true;
 }
 void MainWindow::onCurCamLoopingStopped()
 {
-    showLoopingStatus(false);
+    showLoopingStatus(2);
 }
-void MainWindow::showLoopingStatus(bool looping)
+
+void MainWindow::onCurCamLooping()
 {
-    if(looping)
+
+    isGreen = !isGreen;
+    showLoopingStatus(isGreen?0:1);
+}
+void MainWindow::showLoopingStatus(int status)
+{
+    switch(status)
+    {
+    case 0:
         ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-on.png"));
-    else
+        break;
+    case 1:
+        ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-off.png"));
+        break;
+    case 2:
         ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-mid.png"));
+        break;
+    }
 }

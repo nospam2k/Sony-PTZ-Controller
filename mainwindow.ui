@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>544</height>
+    <width>642</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -316,7 +316,7 @@ background : #333333;
            <widget class="QTextEdit" name="txRxList">
             <property name="minimumSize">
              <size>
-              <width>270</width>
+              <width>300</width>
               <height>250</height>
              </size>
             </property>
@@ -355,8 +355,8 @@ background : #333333;
            <widget class="QListWidget" name="presetList">
             <property name="minimumSize">
              <size>
-              <width>270</width>
-              <height>200</height>
+              <width>300</width>
+              <height>250</height>
              </size>
             </property>
            </widget>
@@ -386,19 +386,26 @@ background : #333333;
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="QLCDNumber" name="waitTimeLcd">
-                  <property name="styleSheet">
-                   <string notr="true">QLCDNumber{
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QLCDNumber" name="waitTimeLcd">
+                    <property name="styleSheet">
+                     <string notr="true">QLCDNumber{
 background : #333333;
 }</string>
-                  </property>
-                  <property name="lineWidth">
-                   <number>0</number>
-                  </property>
-                  <property name="digitCount">
-                   <number>5</number>
-                  </property>
-                 </widget>
+                    </property>
+                    <property name="lineWidth">
+                     <number>0</number>
+                    </property>
+                    <property name="digitCount">
+                     <number>5</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="waitTimeEdit"/>
+                  </item>
+                 </layout>
                 </item>
                 <item>
                  <widget class="QDial" name="waitTimeDial">
@@ -417,31 +424,11 @@ background : #333333;
                   <property name="minimum">
                    <number>1</number>
                   </property>
+                  <property name="maximum">
+                   <number>999</number>
+                  </property>
                   <property name="notchTarget">
                    <double>3.700000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_12">
-                <item>
-                 <widget class="QLineEdit" name="waitTimeEdit"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="waitTimeOKBtn">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>OK</string>
                   </property>
                  </widget>
                 </item>
@@ -461,19 +448,32 @@ background : #333333;
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
-                 <widget class="QLCDNumber" name="moveSpeedLcd">
-                  <property name="styleSheet">
-                   <string notr="true">QLCDNumber{
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <widget class="QLCDNumber" name="moveSpeedLcd">
+                    <property name="styleSheet">
+                     <string notr="true">QLCDNumber{
 background : #333333;
 }</string>
-                  </property>
-                  <property name="lineWidth">
-                   <number>0</number>
-                  </property>
-                 </widget>
+                    </property>
+                    <property name="lineWidth">
+                     <number>0</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="movementSpeedEdit"/>
+                  </item>
+                 </layout>
                 </item>
                 <item>
                  <widget class="QDial" name="moveSpeedDial">
+                  <property name="minimumSize">
+                   <size>
+                    <width>60</width>
+                    <height>60</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>60</width>
@@ -488,29 +488,6 @@ background : #333333;
                   </property>
                   <property name="pageStep">
                    <number>1</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <widget class="QLineEdit" name="movementSpeedEdit"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="movementSpeedOKBtn">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>OK</string>
                   </property>
                  </widget>
                 </item>

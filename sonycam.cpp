@@ -49,13 +49,15 @@ void SonyCam::onError()
 }
 void SonyCam::onTimerOneSec()
 {
-    //increase counter
+    emit looping(this);
     if(isWaitingReply)
         return;
+    //increase counter
     counter ++;
     qDebug()<<counter;
 
-    if(counter >= waiteTime)
+
+    if(counter >= (2 * waiteTime))
     {
 
         counter = 0;
@@ -195,7 +197,7 @@ void SonyCam::startLooping()
     if(timer->isActive())
         return;
     //start timer
-    timer->start(1000);//start looping every 1 sec
+    timer->start(500);//start looping every 0.5 sec
 
     //call first preset
     if(presetLoop.length() > 0)

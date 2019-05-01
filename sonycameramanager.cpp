@@ -57,6 +57,7 @@ void SonyCameraManager::addCamera(SonyCam *cam)
     connect(cam , SIGNAL(messageSent(int,QString,int,SonyCam*)) , this , SLOT(onMessageSent(int,QString,int,SonyCam*)));
     connect(cam , SIGNAL(loopingStarted(SonyCam*)) , this , SLOT(onLoopingStarted(SonyCam*)));
     connect(cam , SIGNAL(loopingStopped(SonyCam*)) , this , SLOT(onLoopingStopped(SonyCam*)));
+    connect(cam , SIGNAL(looping(SonyCam*)) , this , SLOT(onLooping(SonyCam*)));
     emit cameraAdded();
 }
 void SonyCameraManager::removeCamera(SonyCam *cam)
@@ -190,8 +191,6 @@ SonyCam* SonyCameraManager::getCam(QHostAddress ipAddr)
 }
 void SonyCameraManager::onLoopingStarted(SonyCam *cam)
 {
-    qDebug()<<cam;
-    qDebug()<<curCam;
     if(cam == curCam)
         emit curCamLoopingStarted();
 }
@@ -199,4 +198,9 @@ void SonyCameraManager::onLoopingStopped(SonyCam *cam)
 {
     if(cam == curCam)
         emit curCamLoopingStopped();
+}
+void SonyCameraManager::onLooping(SonyCam *cam)
+{
+    if(cam == curCam)
+        emit curCamLooping();
 }

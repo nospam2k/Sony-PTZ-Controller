@@ -39,8 +39,8 @@ void PresetSetupDlg::initUi()
     connect(ui->focusInBtn , SIGNAL(released()) , this , SLOT(stopFocusing()));
     connect(ui->focusOutBtn , SIGNAL(pressed()) , this , SLOT(focusOutOnce()));
     connect(ui->focusOutBtn , SIGNAL(released()) , this , SLOT(stopFocusing()));
-    connect(ui->autoFocusRadio , SIGNAL(clicked()) , this , SLOT(changeFocusMode()));
-    connect(ui->manualFocusRadio , SIGNAL(clicked()) , this , SLOT(changeFocusMode()));
+    connect(ui->autoFocusCheck , SIGNAL(clicked()) , this , SLOT(changeFocusMode()));
+
     connect(ui->setPresetBtn , SIGNAL(clicked()) , this , SLOT(setPreset()));
     connect(ui->recallPreset , SIGNAL(clicked()) , this , SLOT(callPreset()));
 
@@ -58,12 +58,15 @@ void PresetSetupDlg::initUi()
         ui->panSpeedCombo->addItem(QString::number(i + 1));
         ui->tiltSpeedCombo->addItem(QString::number(i + 1));
     }
+    ui->panSpeedCombo->setCurrentIndex(9);
+    ui->tiltSpeedCombo->setCurrentIndex(9);
     for(int i = 0 ; i < 8 ; i ++)
     {
         ui->zoomSpeedCombo->addItem(QString::number(i + 1));
         ui->focusSpeedCombo->addItem(QString::number(i + 1));
     }
-
+    ui->zoomSpeedCombo->setCurrentIndex(4);
+    ui->focusSpeedCombo->setCurrentIndex(4);
     if(presetIndex != -1)
         ui->presetCombo->setCurrentIndex(App()->getCameraManager()->getCurCam()->getPresetList().at(presetIndex).presetNum);
 }
@@ -131,7 +134,7 @@ void PresetSetupDlg::stopFocusing()
 void PresetSetupDlg::changeFocusMode()
 {
     SonyCam* cam = App()->getCameraManager()->getCurCam();
-    cam->setFocusMode(ui->autoFocusRadio->isChecked());
+    cam->setFocusMode(ui->autoFocusCheck->isChecked());
 }
 void PresetSetupDlg::setPreset()
 {

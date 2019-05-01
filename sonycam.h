@@ -122,6 +122,7 @@ signals:
 
     void loopingStarted(SonyCam *cam);
     void loopingStopped(SonyCam *cam);
+    void looping(SonyCam *cam);
 };
 
 #endif // SONYCAM_H

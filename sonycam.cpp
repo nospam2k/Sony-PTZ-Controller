@@ -13,9 +13,8 @@ SonyCam::SonyCam(QString ip, unsigned int portNum , QString cameraName)
 SonyCam::~SonyCam()
 {
     stopLooping();
-    delete timer;
-    if(connector->isOpen())
-        connector->close();
+    disconnectFromCamera();
+    delete timer;    
     delete connector;
 
 }

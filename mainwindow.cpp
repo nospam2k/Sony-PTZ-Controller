@@ -353,10 +353,10 @@ void MainWindow::showLoopingStatus(int status)
     switch(status)
     {
     case 0:
-        ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-on.png"));
+        ui->startLoopingBtn->setIcon(QIcon(":/assets/playing-1.png"));
         break;
     case 1:
-        ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-off.png"));
+        ui->startLoopingBtn->setIcon(QIcon(":/assets/playing-2.png"));
         break;
     case 2:
         ui->startLoopingBtn->setIcon(QIcon(":/assets/toggle-mid.png"));

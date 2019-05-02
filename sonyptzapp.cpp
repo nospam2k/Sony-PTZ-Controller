@@ -19,9 +19,12 @@ SonyPTZApp::SonyPTZApp(int argc, char *argv[]):QApplication(argc, argv)
 }
 SonyPTZApp::~SonyPTZApp()
 {
-    delete cameraManager;
     //delete ui
     delete mainWin;
+
+    //delete cameramanager
+    delete cameraManager;
+
     //delete settings
     delete settings;
 }

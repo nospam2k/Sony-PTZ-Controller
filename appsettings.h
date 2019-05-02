@@ -25,6 +25,8 @@ public:
 
     void setCallPresetSpeed(SonyCam* cam);
     void setWaitTime(SonyCam* cam);
+
+    bool isIPExist(QString ip);
 private:
     QSettings *cameraIpList;
     QSettings *cameraList;

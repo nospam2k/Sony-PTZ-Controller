@@ -28,6 +28,11 @@ void CameraSetupDlg::initUi()
 }
 void CameraSetupDlg::saveCamera()
 {
+    if(App()->getAppSettings()->isIPExist(ui->ipEdit->text()))
+    {
+        App()->showMessage("IP already exists");
+        return;
+    }
     if(camToEdit)
     {
         //remove current data from file

@@ -117,3 +117,9 @@ void AppSettings::savePresets(SonyCam *cam)
     }
     presetList->endArray();
 }
+bool AppSettings::isIPExist(QString ip)
+{
+    if(cameraIpList->value(ip ,  QString("")).toString() != QString(""))
+        return true;
+    return false;
+}

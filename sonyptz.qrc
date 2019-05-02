@@ -15,5 +15,7 @@
         <file>assets/rightarrow.png</file>
         <file>assets/uparrow.png</file>
         <file>assets/sonyptz.png</file>
+        <file>assets/playing-1.png</file>
+        <file>assets/playing-2.png</file>
     </qresource>
 </RCC>

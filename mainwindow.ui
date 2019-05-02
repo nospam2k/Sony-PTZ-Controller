@@ -379,7 +379,7 @@ background : #333333;
               <item>
                <widget class="QLabel" name="label">
                 <property name="text">
-                 <string>Wait Time:</string>
+                 <string>Wait Time(in seconds):</string>
                 </property>
                </widget>
               </item>

@@ -627,7 +627,7 @@ min-width : 60px;
             <item>
              <widget class="QPushButton" name="recallPreset">
               <property name="text">
-               <string>Recal from Camera</string>
+               <string>Recall from Camera</string>
               </property>
              </widget>
             </item>

@@ -41,6 +41,7 @@ void SonyCam::onClientConnected()
 void SonyCam::onClientDisconnected()
 {
     isConnected = false;
+    stopLooping();
     emit cameraDisconnected();
 }
 void SonyCam::onError()
